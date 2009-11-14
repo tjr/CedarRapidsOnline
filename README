@@ -1,0 +1,23 @@
+CedarRapidsOnline
+
+This is a web application built using
+ * Python
+ * CherryPy
+ * PostgreSQL
+ * PyGreSQL
+
+The application serves as an online learning community aimed at current and
+future residents of Cedar Rapids, Iowa.  The overall structure is based on
+the systems described in Software Engineering for Internet Applications
+(http://philip.greenspun.com/seia/)
+
+This software was written by Trevis Rothwell (tjr@gnu.org) and is released
+and reusable under the GNU GPL v3 license (or, at your option, any later
+version of the GNU GPL).
+
+As of this checkin (14 November 2009) this software is incomplete and unusable
+as a full working system.
+
+For background information and design plans, see:
+
+  http://www.trevisrothwell.com/software/cedar-rapids-online
