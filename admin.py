@@ -95,7 +95,7 @@ class AdminArticlesPage:
             pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
         pagecontents += "<br><br>"
         if (edit):
-            pagecontents += "<input type=\"hidden\" name=\"article_id\" value=\"" + str(article_id) + "\">")
+            pagecontents += "<input type=\"hidden\" name=\"article_id\" value=\"" + str(article_id) + "\">"
         if (edit):
             pagecontents += "<input type=\"submit\" value=\"Submit Changes\">"
         else:
