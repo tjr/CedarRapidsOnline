@@ -35,18 +35,24 @@ class ArticlesPage:
         if (article_slug == None):
             article_slug = "map"
 
+        description = None
+        results = None
         # Try to connect to the database.
         try:
             dbconnection = pgdb.connect (__database_connect_fields)
             dbcursor = dbconnection.cursor()
             dbcursor.execute ("SELECT * FROM articles WHERE slug=:1", [article_slug])
+            # Get the cursor description and results from the query.
+            description = dbcursor.description()
+            results = dbcursor.fetchone()
+            
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
         except:
 #            cherrypy.redirect ("/404")
             pass
 
-        # Get the cursor description and results from the query.
-        description = dbcursor.description()
-        results = dbcursor.fetchone()
         if (results == None):
             #cherrypy.redirect ("/404")
             pass
@@ -64,11 +70,7 @@ class ArticlesPage:
             pagetext += results[sqlutils.getfieldindex ("body", description)]
         except:
             pagetext += "<p>Database Error.</p>"
-        
-        # Close the database cursor and connection.
-        dbcursor.close()
-        dbconnection.close()
-
+    
         # Build the whole page and return it.
         return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True

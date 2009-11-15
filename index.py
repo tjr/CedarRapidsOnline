@@ -64,7 +64,6 @@ root.admin = admin.AdminPage()
 cherrypy.tree.mount (root, config="site.conf")
 
 if __name__ == "__main__":
-    import os.path
-    thisdir = os.path.dirname(__file__)
+    cherrypy.config.update({'server.socket_host': '174.143.204.157'})
     cherrypy.quickstart()
 
