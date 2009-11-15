@@ -71,7 +71,7 @@ def generate_header (title=""):
         else:
             logged_in = 1
     
-    window_title = __sitename
+    window_title = sitename
     
     # If there was no particular title specified, use the generic
     # sitename as the title; otherwise, combine the two.
