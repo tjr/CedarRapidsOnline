@@ -75,8 +75,15 @@ class ArticlesPage:
         return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
 
-    def comment (self, article_id):
+    # We want to be able to have URLs like /articles/foo-article
+    # The CherryPy index methods can't accept parameters like that, but
+    # instead we route through the default method.  QED.
+    def default(self, article_slug=None):
+        return self.index (article_slug)
+    default.exposed = True
+
+    def comment (self, article_slug=None):
         # Add comment to article, available to logged in users.
-        pass
+        return pageutils.generate_page ("Add a comment", "Comment form goes here.")
     comment.exposed = True
 
