@@ -19,6 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cherrypy
+import pgdb
+
+import pageutils
+import sqlutils
 
 class AdminUsersPage:
     def index (self):
