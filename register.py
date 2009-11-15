@@ -33,7 +33,7 @@ class RegisterPage:
         pagetext = ""
         
         # Handle error cases from previous attempts.
-        if (errormissing or errorverify):
+        if (errormissing or errorverify or errorduplicate or erroremail):
             pagetext += "<div class=\"error\"><h2>Error</h2>\n"
             pagetext += "<ul>\n"
             if (errormissing):
