@@ -29,7 +29,8 @@ import re
 database_connect_fields = sqlutils.database_connect_fields
 
 class RegisterPage:
-    def index (self, errormissing=False, errorverify=False, errorduplicate=False, erroremail=False):
+    def index (self, errormissing=False, errorverify=False, errorduplicate=False, erroremail=False,
+               name=None, email=None, password=None, passwordverify=None, url=None):
         pagetext = ""
         
         # Handle error cases from previous attempts.
@@ -68,23 +69,38 @@ class RegisterPage:
         pagetext += "<form action=\"/register/process\" method=\"post\">"
         pagetext += "<b>Name</b>:"
         pagetext += "<br>"
-        pagetext += "<input type=\"text\" name=\"name\">"
+        if (name):
+            pagetext += "<input type=\"text\" name=\"name\" value=\"" + name + "\">"
+        else:
+            pagetext += "<input type=\"text\" name=\"name\">"
         pagetext += "<br><br>"
         pagetext += "<b>Email Address</b>:"
         pagetext += "<br>"
-        pagetext += "<input type=\"text\" name=\"email\">"
+        if (email):
+            pagetext += "<input type=\"text\" name=\"email\" value=\"" + email + "\">"
+        else:
+            pagetext += "<input type=\"text\" name=\"email\">"
         pagetext += "<br><br>"
         pagetext += "<b>Password</b>:"
         pagetext += "<br>"
-        pagetext += "<input type=\"password\" name=\"password\">"
+        if (password):
+            pagetext += "<input type=\"password\" name=\"password\" value=\"" + password + "\">"
+        else:
+            pagetext += "<input type=\"password\" name=\"password\">"
         pagetext += "<br><br>"
         pagetext += "<b>Password</b> (enter again to verify):"
         pagetext += "<br>"
-        pagetext += "<input type=\"password\" name=\"passwordverify\">"
+        if (passwordverify):
+            pagetext += "<input type=\"password\" name=\"passwordverify\" value=\"" + passwordverify + "\">"
+        else:
+            pagetext += "<input type=\"password\" name=\"passwordverify\">"
         pagetext += "<br><br>"
         pagetext += "<b>Website</b>: (optional)"
         pagetext += "<br>"
-        pagetext += "<input type=\"text\" name=\"url\">"
+        if (url):
+            pagetext += "<input type=\"text\" name=\"url\" value=\"" + url + "\">"
+        else:
+            pagetext += "<input type=\"text\" name=\"url\">"
         pagetext += "<br><br>"
         pagetext += "<input type=\"submit\" value=\"Register!\">"
         pagetext += "</form>"
@@ -97,8 +113,17 @@ class RegisterPage:
         # filled in, then something unexpected happened, and we shouldn't continue processing
         # the form.
         if (name == None or email == None or password == None or passwordverify == None):
-            return self.index (errormissing = True)
+            return self.index (errormissing = True, name=name, email=email,
+                                   password=password, passwordverify=passwordverify,
+                                   url=url)
         else:
+            # Store original values as given in case we need to represent the form.
+            originalname = name
+            originalemail = email
+            originalpassword = password
+            originalpasswordverify = passwordverify
+            originalurl = url
+
             # Replace single quotes with two single quotes.
             name = sqlutils.quote (str(name))
             email = sqlutils.quote (str(email))
@@ -109,15 +134,21 @@ class RegisterPage:
 
             # Verify all required fields are filled in.
             if (name == '' or email == '' or password == '' or passwordverify == ''):
-                return self.index (errormissing = True)
+                return self.index (errormissing = True, name=originalname, email=originalemail,
+                                   password=originalpassword, passwordverify=originalpasswordverify,
+                                   url=originalurl)
 
             # Verify email address is plausibly valid.
             if (re.match (pageutils.emailregex, email) == None):
-                return self.index (erroremail = True)
+                return self.index (erroremail = True, name=originalname, email=originalemail,
+                                   password=originalpassword, passwordverify=originalpasswordverify,
+                                   url=originalurl)
 
             # Verify passwords match.
             if (password <> passwordverify):
-                return self.index (errorverify = True)
+                return self.index (errorverify = True, name=originalname, email=originalemail,
+                                   password=originalpassword, passwordverify=originalpasswordverify,
+                                   url=originalurl)
 
             # Encypt the password.  Once we do this, we can't get the original
             # password back out of the database, so we can't send the original
@@ -144,7 +175,9 @@ class RegisterPage:
                 dbconnection.close()
 
                 if (results <> None):
-                    return self.index (errorduplicate=True)
+                    return self.index (errorduplicate=True, name=originalname, email=originalemail,
+                                   password=originalpassword, passwordverify=originalpasswordverify,
+                                   url=originalurl)
             except:
                 return pageutils.generate_page ("Database Error", "Database Error")
 
