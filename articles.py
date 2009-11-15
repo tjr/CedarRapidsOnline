@@ -43,7 +43,7 @@ class ArticlesPage:
             dbcursor = dbconnection.cursor()
             dbcursor.execute ("SELECT * FROM articles WHERE slug=%s", [article_slug])
             # Get the cursor description and results from the query.
-            description = dbcursor.description()
+            description = dbcursor.description
             results = dbcursor.fetchone()
             
             # Close the database cursor and connection.

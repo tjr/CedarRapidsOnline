@@ -25,6 +25,8 @@ import sqlutils
 import string
 import crypt
 
+__database_connect_fields = sqlutils.__database_connect_fields
+
 class LoginPage:
     def index (self):
         pagetext = "<form action=\"/login/process\" method=\"post\">"
@@ -57,9 +59,9 @@ class LoginPage:
         try:
             dbconnection = pgdb.connect (__database_connect_fields)
             dbcursor = dbconnection.cursor()
-            dbcursor.execute ("SELECT * FROM users WHERE email='%s'", [email])
+            dbcursor.execute ("SELECT * FROM users WHERE email=%s", [email])
             # Get the cursor description and results from the query.
-            description = dbcursor.description()
+            description = dbcursor.description
             results = dbcursor.fetchone()
             
             # Close the database cursor and connection.
@@ -72,7 +74,7 @@ class LoginPage:
         # If we don't have any results, the email address wasn't on record.
         if (results == None):
             # FIXME: do something more useful here.
-            raise cherrypy.HTTPRedirect ("/login?emailnotonrecord")
+            raise cherrypy.HTTPRedirect ("/login?email")
         else:
             stored_password = ""
             try:
