@@ -56,7 +56,7 @@ class LoginPage:
         try:
             dbconnection = pgdb.connect (__database_connect_fields)
             dbcursor = dbconnection.cursor()
-            dbcursor.execute ("SELECT * FROM users WHERE email=:1", [email])
+            dbcursor.execute ("SELECT * FROM users WHERE email=%s", [email])
             # Get the cursor description and results from the query.
             description = dbcursor.description()
             results = dbcursor.fetchone()

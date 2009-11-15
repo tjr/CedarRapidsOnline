@@ -41,7 +41,7 @@ class ArticlesPage:
         try:
             dbconnection = pgdb.connect (__database_connect_fields)
             dbcursor = dbconnection.cursor()
-            dbcursor.execute ("SELECT * FROM articles WHERE slug=:1", [article_slug])
+            dbcursor.execute ("SELECT * FROM articles WHERE slug=%s", [article_slug])
             # Get the cursor description and results from the query.
             description = dbcursor.description()
             results = dbcursor.fetchone()
