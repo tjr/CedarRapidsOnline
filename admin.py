@@ -66,6 +66,37 @@ class AdminArticlesPage:
 
         return pageutils.generate_page ("Create New Article", pagecontents)
     new.exposed = True
+    
+    def processnew (self, title=None, slug=None, display=None, body=None):
+        # If we got to this page through the /admin/articles/new form, all fields
+        # should be filled in.  If they aren't, something unexpected happened, and
+        # we shouldn't continue processing the form.
+        if (title == None or slug == None or display == None or body == None):
+            return pageutils.generate_page ("Invalid Input for New Article",
+                                            "Invalid Input for New Article!")
+        else:
+            # Remove any leading or trailing spaces.
+            title = string.strip (title)
+            slug = string.strip (slug)
+            body = string.strip (body)
+            display = string.strip (display)
+            author_id = "1" #FIXME: need to use a real valid author_id once sessions are working.
+
+            try:
+                # Connect to the database and insert the values.
+                dbconnection = pgdb.connect (__database_connect_fields)
+                dbcursor = dbconnection.cursor()
+                dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
+                                  "VALUES (:1, :2, :3, :4, :5, current_timestamp)",
+                                  [title, author_id, slug, body, display])
+            
+                # Close the database cursor and connection.
+                dbcursor.close()
+                dbconnection.close()
+            except:
+                return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
+        
+        cherrypy.redirect ("/admin/articles/")
 
     def edit (self, article_id = None):
         # Edit form for given article.

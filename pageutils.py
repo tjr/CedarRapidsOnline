@@ -18,7 +18,40 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import cherrypy
+
 __sitename = "CedarRapidsOnline"
+
+# Return true if current user is logged in.
+def is_logged_in_p ():
+    if (cherrypy.session.get('is_logged_in_p') == 'True'):
+        return True
+    else:
+        return False
+
+# Return true if current user is an admin.
+def is_admin_p ():
+    if (cherrypy.session.get('is_admin_p') == 'True'):
+        return True
+    else:
+        return False
+
+# Return string value of logged in user_id, None if not logged in.
+def get_user_id ():
+    if (is_logged_in_p()):
+        return cherrypy.session['user_id']
+    else:
+        return None
+
+# Set is_logged_in_p flag, and store user_id and admin flag. 
+# Should be called upon login.
+def set_logged_in (user_id, is_admin_p=False):
+    cherrypy.session['is_logged_in_p'] = 'True'
+    cherrypy.session['user_id'] = str (user_id)
+    if (is_admin_p == True):
+        cherrypy.session['is_admin_p'] = 'True'
+    else:
+        cherrypy.session['is_admin_p'] = 'False'
 
 # Return a basic page header template, including header menu.
 def generate_header (title=""):
@@ -30,6 +63,11 @@ def generate_header (title=""):
     # 1: Logged in, regular user
     # 2: Logged in, admin user
     logged_in = 0
+    if (is_logged_in_p()):
+        if (is_admin_p()):
+            logged_in = 2
+        else:
+            logged_in = 1
     
     window_title = __sitename
     

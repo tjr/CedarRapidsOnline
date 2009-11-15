@@ -19,7 +19,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cherrypy
+import pgdb
 import pageutils
+import sqlutils
 
 # Subpages.
 import articles
@@ -27,7 +29,9 @@ import discussions
 import events
 import users
 import admin
-
+import register
+import login
+import logout
 
 class HomePage:
     def index (self):
@@ -40,26 +44,14 @@ class HomePage:
            """)
     index.exposed = True
 
-    def register (self):
-        return pageutils.generate_page ("Register as a New User",
-                                        "Registration Page")
-    register.exposed = True
-
-    def login (self):
-        return pageutils.generate_page ("Login",
-                                        "Login")
-    login.exposed = True
-
-    def logout (self):
-        return pageutils.generate_page ("Logout",
-                                        "Logout")
-    logout.exposed = True
-
 root = HomePage()
 root.articles = articles.ArticlesPage()
 root.discussions = discussions.DiscussionsPage()
 root.events = events.EventsPage()
 root.users = users.UsersPage()
+root.register = register.RegisterPage()
+root.login = login.LoginPage()
+root.logout = logout.LogoutPage()
 root.admin = admin.AdminPage()
 cherrypy.tree.mount (root, config="site.conf")
 

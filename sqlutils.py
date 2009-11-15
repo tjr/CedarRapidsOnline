@@ -37,3 +37,10 @@ def getfieldindex (fieldname, dbdescription):
             return fieldposition
     return None
 
+
+# Replace any single quotes in the string with double quotes.  Used for
+# preparing user input for placement in the database.  Also removes any
+# leading or trailing spaces.
+def quote (s):
+    return string.strip (s.replace ("'", "''"))
+
