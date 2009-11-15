@@ -76,9 +76,9 @@ def generate_header (title=""):
     # If there was no particular title specified, use the generic
     # sitename as the title; otherwise, combine the two.
     if (title == ""):
-        title = _sitename
+        title = sitename
     else:
-        window_title = title + " | " + __sitename
+        window_title = title + " | " + sitename
 
     r = "<html>\n"
     r += "<head>\n<title>" + window_title + "</title>\n</head>\n"
