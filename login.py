@@ -37,7 +37,7 @@ class LoginPage:
         pagetext += "<b>Password</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"password\" name=\"password\">"
-        pagetext += "<br>"
+        pagetext += "<br><br>"
         pagetext += "<input type=\"submit\" value=\"Log In\">"
         pagetext += "</form>"
         # FIXME: offer to send a new password to the user's email address.

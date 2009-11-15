@@ -22,6 +22,7 @@ import cherrypy
 import pgdb
 import pageutils
 import sqlutils
+import string
 
 database_connect_fields = sqlutils.database_connect_fields
 
@@ -51,7 +52,7 @@ class AdminArticlesPage:
             raise cherrypy.HTTPRedirect ("/")
 
         # Present listing of all articles.
-        return "ADMIN: Present listing of all articles."
+        return pageutils.generate_page ("Articles Administration", "<a href=\"/admin/articles/new\">New</a>")
     index.exposed = True
 
     def new (self):
