@@ -24,6 +24,7 @@ import crypt
 import string
 import pageutils
 import sqlutils
+import re
 
 database_connect_fields = sqlutils.database_connect_fields
 
