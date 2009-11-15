@@ -94,7 +94,7 @@ class LoginPage:
                     # FIXME: do something more useful here.
                     cherrypy.redirect ("/fatalerror")
                 # If the user level is 2 or higher, the user is an admin user.
-                set_logged_in (user_id, (user_level > 1)):
+                set_logged_in (user_id, (user_level > 1))
 
         # FIXME: Might want to redirect to some sort of user dashboard page in the future.
         cherrypy.redirect ("/")
