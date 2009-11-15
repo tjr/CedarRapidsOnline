@@ -126,10 +126,6 @@ class AdminArticlesPage:
             display = string.strip (display)
             author_id = pageutils.get_user_id()
 
-    raw_results = db_conn.query ("UPDATE learn SET title='" + title + "', url='" + url +
-                                 "', body='" + body +"', display=" + str(int(display)) + " WHERE " +
-                                 "learn_id=" + str(int(learn_id)))
-
             try:
                 # Connect to the database and insert the values.
                 dbconnection = pgdb.connect (database_connect_fields)
