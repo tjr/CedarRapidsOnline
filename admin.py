@@ -90,7 +90,7 @@ class AdminArticlesPage:
         pagecontents += "<b>Body</b>:"
         pagecontents += "<br>"
         if (edit):
-            pagecontents += "<textarea cols=80 rows=10 name=\"body\" value=\"" + str(body) + "\"></textarea>\n"
+            pagecontents += "<textarea cols=80 rows=10 name=\"body\">" + str(body) +"</textarea>\n"
         else:
             pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
         pagecontents += "<br><br>"
@@ -134,7 +134,7 @@ class AdminArticlesPage:
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 if (edit):
-                    dbcursor.execute ("UPDATE articles SET title=%s, slug=%s, body=%s, display=%s, WHERE slug=%s",
+                    dbcursor.execute ("UPDATE articles SET title='%s', slug='%s', body='%s', display='%s', WHERE slug=%s",
                                       [title, slug, body, display, slug])
                 else:
                     dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
