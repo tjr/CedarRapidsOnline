@@ -28,8 +28,26 @@ import sqlutils
 database_connect_fields = sqlutils.database_connect_fields
 
 class RegisterPage:
-    def index (self):
-        pagetext = """
+    def index (self, errormissing=False, errorverify=False, errorduplicate=False, erroremail=False):
+        pagetext = ""
+        
+        # Handle error cases from previous attempts.
+        if (errormissing or errorverify):
+            pagetext += "<div class=\"error\"><h2>Error</h2>\n"
+            pagetext += "<ul>\n"
+            if (errormissing):
+                pagetext += "<li>Please complete all required fields.</li>\n"
+            if (errorverify):
+                pagetext += "<li>Both Password entries must match, to ensure\n" +
+                "password is stored correctly.</li>\n"
+            if (errorduplicate):
+                pagetext += "<li>Email address provided already on record; perhaps you already have " +
+                "an account and just need to <a href=\"/login\">log in</a>?</li>\n"
+            if (erroremail):
+                pagetext += "<li>Please enter a valid email address, in the form: user@bar.baz</li>\n"
+            pagetext += "</ul></div>\n"
+            
+        pagetext += """
     <p>
     In order to participate in this web site's discussion forums
     and post your comments on articles, we ask that you register as
@@ -68,7 +86,7 @@ class RegisterPage:
         pagetext += "<b>Website</b>: (optional)"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"url\">"
-        pagetext += "<br>"
+        pagetext += "<br><br>"
         pagetext += "<input type=\"submit\" value=\"Register!\">"
         pagetext += "</form>"
         return pageutils.generate_page ("Register as a New User", pagetext)
@@ -80,7 +98,7 @@ class RegisterPage:
         # filled in, then something unexpected happened, and we shouldn't continue processing
         # the form.
         if (name == None or email == None or password == None or passwordverify == None):
-            raise cherrypy.HTTPRedirect ("/register")
+            return self.index (errormissing = True)
         else:
             # Replace single quotes with two single quotes.
             name = sqlutils.quote (str(name))
@@ -89,6 +107,18 @@ class RegisterPage:
             passwordverify = sqlutils.quote (str(passwordverify))
             url = sqlutils.quote (str(url))
             level = "1" # default level for regular user.
+
+            # Verify all required fields are filled in.
+            if (name == '' or email == '' or password == '' or passwordverify == ''):
+                return self.index (errormissing = True)
+
+            # Verify email address is plausibly valid.
+            if (re.match (pageutils.emailregex, email) == None):
+                return self.index (erroremail = True)
+
+            # Verify passwords match.
+            if (password <> passwordverify):
+                return self.index (errorverify = True)
 
             # Encypt the password.  Once we do this, we can't get the original
             # password back out of the database, so we can't send the original
@@ -102,8 +132,22 @@ class RegisterPage:
             else:
                 url = "http://" + url
 
-            # FIXME: error checking for invalid/missing input.
             # FIXME: ensure that email address hasn't already been used in database.
+            try:
+                dbconnection = pgdb.connect (database_connect_fields)
+                dbcursor = dbconnection.cursor()
+                dbcursor.execute ("SELECT * FROM users WHERE email=%s", [email])
+                
+                results = dbcursor.fetchone()
+
+                # Close the database cursor and connection.
+                dbcursor.close()
+                dbconnection.close()
+
+                if (results <> None):
+                    return self.index (errorduplicate=True)
+            except:
+                return pageutils.generate_page ("Database Error", "Database Error")
 
             try:
                 # Connect to the database and insert the values.

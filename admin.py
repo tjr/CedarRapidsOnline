@@ -27,23 +27,39 @@ database_connect_fields = sqlutils.database_connect_fields
 
 class AdminUsersPage:
     def index (self):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # Present listing of all users.
         return "ADMIN: Present listing of all users."
     index.exposed = True
 
     def edit (self, user_id=None):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # Edit form for given user.
         return "ADMIN: Edit form for given user."
     edit.exposed = True
 
 class AdminArticlesPage:
     def index (self):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # Present listing of all articles.
         return "ADMIN: Present listing of all articles."
     index.exposed = True
 
     def new (self):
-        # Create new article.
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
+        # Form to create new article.
         pagecontents = ""
         pagecontents += "<form action=\"/admin/articles/processnew\" method=\"post\">"
         pagecontents += "<b>Title</b>:"
@@ -69,6 +85,10 @@ class AdminArticlesPage:
     new.exposed = True
     
     def processnew (self, title=None, slug=None, display=None, body=None):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # If we got to this page through the /admin/articles/new form, all fields
         # should be filled in.  If they aren't, something unexpected happened, and
         # we shouldn't continue processing the form.
@@ -81,7 +101,7 @@ class AdminArticlesPage:
             slug = string.strip (slug)
             body = string.strip (body)
             display = string.strip (display)
-            author_id = "1" #FIXME: need to use a real valid author_id once sessions are working.
+            author_id = pageutils.get_user_id()
 
             try:
                 # Connect to the database and insert the values.
@@ -98,8 +118,13 @@ class AdminArticlesPage:
                 return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
         
         raise cherrypy.HTTPRedirect ("/admin/articles/")
+    processnew.exposed = True
 
     def edit (self, article_id = None):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # Edit form for given article.
         return "ADMIN: Edit form for given article."
     edit.exposed = True
@@ -118,15 +143,23 @@ class AdminDiscussionsPage:
 
 class AdminEventsPage:
     def index (self):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # No reason to present listing of events, as this is available
         # from the main public view.
         return "ADMIN: Select admin EDIT from a particular event."
     index.exposed = True
 
     def edit (self, event_id=None):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # Edit form for given event.
         return "ADMIN: Edit form for given event."
-    edit.exposer = True
+    edit.exposed = True
 
 class AdminPage:
     def __init__(self):
@@ -138,6 +171,10 @@ class AdminPage:
         self.events = AdminEventsPage()
 
     def index (self):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
         # Present menu of administrative activities
         return """
              <a href=\"/admin/users/\">Users Admin</a><p>

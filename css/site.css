@@ -39,6 +39,12 @@ div.header {
 	
 }
 
+div.error {
+    border: solid 3px #444;
+    background: #FBB;
+    padding: 10px;
+}
+
 img.logo {
 	border: none;
 	padding-top: 10px;

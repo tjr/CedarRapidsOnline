@@ -20,7 +20,9 @@
 
 import cherrypy
 
-__sitename = "CedarRapidsOnline"
+sitename = "CedarRapidsOnline"
+
+emailregex = "^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$"
 
 # Return true if current user is logged in.
 def is_logged_in_p ():
@@ -31,7 +33,7 @@ def is_logged_in_p ():
 
 # Return true if current user is an admin.
 def is_admin_p ():
-    if (cherrypy.session.get('is_admin_p') == 'True'):
+    if (cherrypy.session.get('is_admin_p') == 'True' and is_logged_in_p()):
         return True
     else:
         return False
@@ -96,7 +98,9 @@ def generate_header (title=""):
     r += "</div>\n"
 
     r += "<hr>\n"
-    
+
+    r += "<h2>" + title + "</h2>\n"
+
     r += "<div class=\"content\">\n"
 
     return r
