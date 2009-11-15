@@ -72,7 +72,7 @@ class LoginPage:
         # If we don't have any results, the email address wasn't on record.
         if (results == None):
             # FIXME: do something more useful here.
-            raise cherrypy.HTTPRedirect ("/login")
+            raise cherrypy.HTTPRedirect ("/login?emailnotonrecord")
         else:
             stored_password = ""
             try:
@@ -83,7 +83,7 @@ class LoginPage:
             # Verify password equivalence.
             if (password <> stored_password):
                 # FIXME: do something more useful here.
-                raise cherrypy.HTTPRedirect ("/login")
+                raise cherrypy.HTTPRedirect ("/login?passwordmismatch")
             else:
                 # If we got this far, the email address was on record, and the password
                 # matches it, so we deem the user to be logged in.  Hooray!
