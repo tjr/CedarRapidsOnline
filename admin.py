@@ -111,7 +111,8 @@ class AdminArticlesPage:
                 dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
                                   "VALUES (%s, %s, %s, %s, %s, current_timestamp)",
                                   [title, author_id, slug, body, display])
-            
+                dbconnection.commit()
+
                 # Close the database cursor and connection.
                 dbcursor.close()
                 dbconnection.close()
