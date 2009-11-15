@@ -55,7 +55,7 @@ class AdminArticlesPage:
         return pageutils.generate_page ("Articles Administration", "<a href=\"/admin/articles/new\">New</a>")
     index.exposed = True
 
-    def new (self, edit=False, title=None, slug=None, display=None, body=None):
+    def new (self, edit=False, title=None, slug=None, display=None, body=None, article_id=None):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
@@ -95,6 +95,8 @@ class AdminArticlesPage:
             pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
         pagecontents += "<br><br>"
         if (edit):
+            pagecontents += "<input type=\"hidden\" name=\"article_id\" value=\"" + str(article_id) + "\">")
+        if (edit):
             pagecontents += "<input type=\"submit\" value=\"Submit Changes\">"
         else:
             pagecontents += "<input type=\"submit\" value=\"Create New Article\">"
@@ -106,11 +108,11 @@ class AdminArticlesPage:
             return pageutils.generate_page ("Create New Article", pagecontents)
     new.exposed = True
     
-    def processedit (self, title=None, slug=None, display=None, body=None):
-        return self.processnew (title=title, slug=slug, display=display, body=body, edit=True)
+    def processedit (self, title=None, slug=None, display=None, body=None, article_id=None):
+        return self.processnew (title=title, slug=slug, display=display, body=body, article_id=article_id, edit=True)
     processedit.exposed = True
 
-    def processnew (self, title=None, slug=None, display=None, body=None, edit=True):
+    def processnew (self, title=None, slug=None, display=None, body=None, article_id=None, edit=True):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
@@ -134,8 +136,10 @@ class AdminArticlesPage:
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 if (edit):
-                    dbcursor.execute ("UPDATE articles SET title='%s', slug='%s', body='%s', display='%s', WHERE slug=%s",
-                                      [title, slug, body, display, slug])
+                    if (article_id == None):
+                        return pageutils.generate_page ("No Article Id Specified", "No Article Id Specified")
+                    dbcursor.execute ("UPDATE articles SET title=%s, slug=%s, body=%s, display=%d, WHERE article_id=%d",
+                                      [title, slug, body, int(display), int(article_id)])
                 else:
                     dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
                                   "VALUES (%s, %s, %s, %s, %s, current_timestamp)",
@@ -198,13 +202,20 @@ class AdminArticlesPage:
         # Obtain the article display value.
         display = ""
         try:
-            display = results[sqlutils.getfieldindex ("display", description)]
+            display = str(results[sqlutils.getfieldindex ("display", description)])
+        except:
+            pass
+
+        # Obtain the article_id.
+        article_id = ""
+        try:
+            article_id = str(results[sqlutils.getfieldindex ("article_id", description)])
         except:
             pass
 
         slug = article_slug
 
-        return self.new (edit=True, title=title, body=body, display=display, slug=slug)
+        return self.new (edit=True, title=title, body=body, display=display, slug=slug, article_id=article_id)
     edit.exposed = True
 
 class AdminDiscussionsPage:
