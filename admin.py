@@ -55,37 +55,59 @@ class AdminArticlesPage:
         return pageutils.generate_page ("Articles Administration", "<a href=\"/admin/articles/new\">New</a>")
     index.exposed = True
 
-    def new (self):
+    def new (self, edit=False, title=None, slug=None, display=None, body=None):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
 
         # Form to create new article.
         pagecontents = ""
-        pagecontents += "<form action=\"/admin/articles/processnew\" method=\"post\">"
+        if (edit):
+            pagecontents += "<form action=\"/admin/articles/processedit\" method=\"post\">"
+        else:
+            pagecontents += "<form action=\"/admin/articles/processnew\" method=\"post\">"
         pagecontents += "<b>Title</b>:"
         pagecontents += "<br>"
-        pagecontents += "<input type=\"text\" name=\"title\">"
+        if (edit):
+            pagecontents += "<input type=\"text\" name=\"title\" value=\"" + str(title) + "\">"
+        else:
+            pagecontents += "<input type=\"text\" name=\"title\">"
         pagecontents += "<br><br>\n"
         pagecontents += "<b>Slug</b>:"
         pagecontents += "<br>"
-        pagecontents += "<input type=\"text\" name=\"slug\">"
+        if (edit):
+            pagecontents += "<input type=\"text\" name=\"slug\" value=\"" + str(slug) + "\">"
+        else:
+            pagecontents += "<input type=\"text\" name=\"slug\">"
         pagecontents += "<br><br>"
         pagecontents += "<b>Display</b>: (0, 1, or 2 only)"
         pagecontents += "<br>"
-        pagecontents += "<input type=\"text\" name=\"display\">"
+        if (edit):
+            pagecontents += "<input type=\"text\" name=\"display\" value=\"" + str(display) + "\">"
+        else:
+            pagecontents += "<input type=\"text\" name=\"display\">"
         pagecontents += "<br><br>"
         pagecontents += "<b>Body</b>:"
         pagecontents += "<br>"
-        pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
+        if (edit):
+            pagecontents += "<textarea cols=80 rows=10 name=\"body\" value=\"" + str(body) + "\"></textarea>\n"
+        else:
+            pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
         pagecontents += "<br>"
-        pagecontents += "<input type=\"submit\" value=\"Create New Article\">"
+        if (edit):
+            pagecontents += "<input type=\"submit\" value=\"Submit Changes\">"
+        else:
+            pagecontents += "<input type=\"submit\" value=\"Create New Article\">"
         pagecontents += "</form>"
 
         return pageutils.generate_page ("Create New Article", pagecontents)
     new.exposed = True
     
-    def processnew (self, title=None, slug=None, display=None, body=None):
+    def processedit (self, title=None, slug=None, display=None, body=None):
+        return self.processnew (title=title, slug=slug, display=display, body=body, edit=True)
+    processedit.exposed = True
+
+    def processnew (self, title=None, slug=None, display=None, body=None, edit=True):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
@@ -104,11 +126,20 @@ class AdminArticlesPage:
             display = string.strip (display)
             author_id = pageutils.get_user_id()
 
+    raw_results = db_conn.query ("UPDATE learn SET title='" + title + "', url='" + url +
+                                 "', body='" + body +"', display=" + str(int(display)) + " WHERE " +
+                                 "learn_id=" + str(int(learn_id)))
+
             try:
                 # Connect to the database and insert the values.
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
-                dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
+                if (edit):
+                    dbcursor.execute ("UPDATE articles SET (title, slug, body, display) " +
+                                      "VALUES (%s, %s, %s, %s) WHERE slug=%s",
+                                      [title, slug, body, display, slug])
+                else:
+                    dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
                                   "VALUES (%s, %s, %s, %s, %s, current_timestamp)",
                                   [title, author_id, slug, body, display])
                 dbconnection.commit()
@@ -122,13 +153,60 @@ class AdminArticlesPage:
         raise cherrypy.HTTPRedirect ("/admin/articles/")
     processnew.exposed = True
 
-    def edit (self, article_id = None):
+    def edit (self, article_slug = None):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
+        
+        # Verify we have an article to work with.
+        if (article_slug == None):
+            raise cherrypy.HTTPRedirect ("/articles/")
 
-        # Edit form for given article.
-        return "ADMIN: Edit form for given article."
+        description = None
+        results = None
+        # Try to connect to the database.
+        try:
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            dbcursor.execute ("SELECT * FROM articles WHERE slug=%s", [article_slug])
+            
+            # Get the cursor description and results from the query.
+            description = dbcursor.description
+            results = dbcursor.fetchone()
+            
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            pass
+
+        if (results == None):
+            return pageutils.generate_page ("Invalid Article Specified", "Invalid Article Specified")
+
+        # Obtain the article title from the database results.
+        title = ""
+        try:
+            title = results[sqlutils.getfieldindex ("title", description)]
+        except:
+            pass
+
+        # Obtain the article body from the database results.
+        body = ""
+        try:
+            body = results[sqlutils.getfieldindex ("body", description)]
+        except:
+            pass
+
+        # Obtain the article display value.
+        display = ""
+        try:
+            display = results[sqlutils.getfieldindex ("display", description)]
+        except:
+            pass
+
+        slug = article_slug
+
+        return self.new (edit=True, title=title, body=body, display=display, slug=slug)
     edit.exposed = True
 
 class AdminDiscussionsPage:
