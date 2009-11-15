@@ -22,6 +22,7 @@ import cherrypy
 import pgdb
 import pageutils
 import sqlutils
+import string
 
 class LoginPage:
     def index (self):

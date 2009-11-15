@@ -21,7 +21,7 @@
 import cherrypy
 import pgdb
 import crypt
-
+import string
 import pageutils
 import sqlutils
 
@@ -108,9 +108,10 @@ class RegisterPage:
                 dbconnection = pgdb.connect (__database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 dbcursor.execute ("INSERT INTO users (name, email, password, url, level) " +
-                                  "VALUES (:1, :2, :3, :4, :5)",
+                                  "VALUES (%s, %s, %s, %s, %s)",
                                   [name, email, password, url, level])
-            
+                dbconnection.commit()
+
                 # Close the database cursor and connection.
                 dbcursor.close()
                 dbconnection.close()
