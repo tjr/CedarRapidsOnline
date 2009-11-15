@@ -38,11 +38,9 @@ class RegisterPage:
             if (errormissing):
                 pagetext += "<li>Please complete all required fields.</li>\n"
             if (errorverify):
-                pagetext += "<li>Both Password entries must match, to ensure\n" +
-                "password is stored correctly.</li>\n"
+                pagetext += "<li>Both Password entries must match, to ensure password is stored correctly.</li>\n"
             if (errorduplicate):
-                pagetext += "<li>Email address provided already on record; perhaps you already have " +
-                "an account and just need to <a href=\"/login\">log in</a>?</li>\n"
+                pagetext += "<li>Email address provided already on record; perhaps you already have an account and just need to <a href=\"/login\">log in</a>?</li>\n"
             if (erroremail):
                 pagetext += "<li>Please enter a valid email address, in the form: user@bar.baz</li>\n"
             pagetext += "</ul></div>\n"
