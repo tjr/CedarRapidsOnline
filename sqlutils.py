@@ -20,7 +20,7 @@
 
 import string
 
-__database_connect_fields = "host:database:username:password"
+database_connect_fields = 'host:database:username:password'
 
 # The PGDB implementation lets users access columns in a returned
 # row via index number rather than field name. This is rather annoying

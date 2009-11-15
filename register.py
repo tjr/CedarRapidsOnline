@@ -25,6 +25,8 @@ import string
 import pageutils
 import sqlutils
 
+database_connect_fields = sqlutils.database_connect_fields
+
 class RegisterPage:
     def index (self):
         pagetext = """
@@ -105,7 +107,7 @@ class RegisterPage:
 
             try:
                 # Connect to the database and insert the values.
-                dbconnection = pgdb.connect (__database_connect_fields)
+                dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 dbcursor.execute ("INSERT INTO users (name, email, password, url, level) " +
                                   "VALUES (%s, %s, %s, %s, %s)",

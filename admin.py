@@ -20,9 +20,10 @@
 
 import cherrypy
 import pgdb
-
 import pageutils
 import sqlutils
+
+database_connect_fields = sqlutils.database_connect_fields
 
 class AdminUsersPage:
     def index (self):
@@ -84,7 +85,7 @@ class AdminArticlesPage:
 
             try:
                 # Connect to the database and insert the values.
-                dbconnection = pgdb.connect (__database_connect_fields)
+                dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
                                   "VALUES (%s, %s, %s, %s, %s, current_timestamp)",

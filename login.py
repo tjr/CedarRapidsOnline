@@ -25,7 +25,7 @@ import sqlutils
 import string
 import crypt
 
-__database_connect_fields = sqlutils.__database_connect_fields
+database_connect_fields = sqlutils.database_connect_fields
 
 class LoginPage:
     def index (self):
@@ -57,7 +57,7 @@ class LoginPage:
         results = None
         # Try to connect to the database.
         try:
-            dbconnection = pgdb.connect (__database_connect_fields)
+            dbconnection = pgdb.connect (database_connect_fields)
             dbcursor = dbconnection.cursor()
             dbcursor.execute ("SELECT * FROM users WHERE email=%s", [email])
             # Get the cursor description and results from the query.
@@ -93,12 +93,12 @@ class LoginPage:
                 user_level = 0
                 try:
                     user_id = results[sqlutils.getfieldindex ("user_id", description)]
-                    user_level = results[sqlutiles.getfieldindex ("level", description)]
+                    user_level = results[sqlutils.getfieldindex ("level", description)]
                 except:
                     # FIXME: do something more useful here.
                     raise cherrypy.HTTPRedirect ("/fatalerror")
                 # If the user level is 2 or higher, the user is an admin user.
-                set_logged_in (user_id, (user_level > 1))
+                pageutils.set_logged_in (user_id, (user_level > 1))
 
         # FIXME: Might want to redirect to some sort of user dashboard page in the future.
         raise cherrypy.HTTPRedirect ("/")

@@ -20,7 +20,6 @@
 
 import cherrypy
 import pgdb
-
 import pageutils
 import sqlutils
 
@@ -34,3 +33,4 @@ class LogoutPage:
     def complete (self):
         return pageutils.generate_page ("Logged Out",
                                         "You are now logged out. Thanks for using CedarRapidsOnline!")
+    complete.exposed = True

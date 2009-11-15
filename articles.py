@@ -24,7 +24,7 @@ import pgdb
 import sqlutils
 import pageutils
 
-__database_connect_fields = sqlutils.__database_connect_fields
+database_connect_fields = sqlutils.database_connect_fields
 
 class ArticlesPage:
     def index (self, article_slug=None):
@@ -39,7 +39,7 @@ class ArticlesPage:
         results = None
         # Try to connect to the database.
         try:
-            dbconnection = pgdb.connect (__database_connect_fields)
+            dbconnection = pgdb.connect (database_connect_fields)
             dbcursor = dbconnection.cursor()
             dbcursor.execute ("SELECT * FROM articles WHERE slug=%s", [article_slug])
             # Get the cursor description and results from the query.
