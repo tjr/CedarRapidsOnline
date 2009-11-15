@@ -93,14 +93,17 @@ class AdminArticlesPage:
             pagecontents += "<textarea cols=80 rows=10 name=\"body\" value=\"" + str(body) + "\"></textarea>\n"
         else:
             pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
-        pagecontents += "<br>"
+        pagecontents += "<br><br>"
         if (edit):
             pagecontents += "<input type=\"submit\" value=\"Submit Changes\">"
         else:
             pagecontents += "<input type=\"submit\" value=\"Create New Article\">"
         pagecontents += "</form>"
 
-        return pageutils.generate_page ("Create New Article", pagecontents)
+        if (edit):
+            return pageutils.generate_page ("Edit Article", pagecontents)
+        else:
+            return pageutils.generate_page ("Create New Article", pagecontents)
     new.exposed = True
     
     def processedit (self, title=None, slug=None, display=None, body=None):
@@ -131,8 +134,7 @@ class AdminArticlesPage:
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 if (edit):
-                    dbcursor.execute ("UPDATE articles SET (title, slug, body, display) " +
-                                      "VALUES (%s, %s, %s, %s) WHERE slug=%s",
+                    dbcursor.execute ("UPDATE articles SET title=%s, slug=%s, body=%s, display=%s, WHERE slug=%s",
                                       [title, slug, body, display, slug])
                 else:
                     dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
