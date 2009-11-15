@@ -39,7 +39,28 @@ class AdminArticlesPage:
 
     def new (self):
         # Create new article.
-        return "ADMIN: Create new article."
+        pagecontents = ""
+        pagecontents += "<form action=\"/admin/articles/processnew\" method=\"post\">"
+        pagecontents += "<b>Title</b>:"
+        pagecontents += "<br>"
+        pagecontents += "<input type=\"text\" name=\"title\">"
+        pagecontents += "<br><br>\n"
+        pagecontents += "<b>Slug</b>:"
+        pagecontents += "<br>"
+        pagecontents += "<input type=\"text\" name=\"slug\">"
+        pagecontents += "<br><br>"
+        pagecontents += "<b>Display</b>: (0, 1, or 2 only)"
+        pagecontents += "<br>"
+        pagecontents += "<input type=\"text\" name=\"display\">"
+        pagecontents += "<br><br>"
+        pagecontents += "<b>Body</b>:"
+        pagecontents += "<br>"
+        pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
+        pagecontents += "<br>"
+        pagecontents += "<input type=\"submit\" value=\"Create New Article\">"
+        pagecontents += "</form>"
+
+        return pageutils.generate_page ("Create New Article", pagecontents)
     new.exposed = True
 
     def edit (self, article_id = None):
