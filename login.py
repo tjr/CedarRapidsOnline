@@ -23,10 +23,11 @@ import pgdb
 import pageutils
 import sqlutils
 import string
+import crypt
 
 class LoginPage:
     def index (self):
-        pagetext += "<form action=\"/login/process\" method=\"post\">"
+        pagetext = "<form action=\"/login/process\" method=\"post\">"
         pagetext += "<b>Email Address</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"email\">"
@@ -71,18 +72,18 @@ class LoginPage:
         # If we don't have any results, the email address wasn't on record.
         if (results == None):
             # FIXME: do something more useful here.
-            cherrypy.redirect ("/login")
+            raise cherrypy.HTTPRedirect ("/login")
         else:
             stored_password = ""
             try:
                 stored_password = results[sqlutils.getfieldindex ("password", description)]
             except:
                 # FIXME: do something more useful here.
-                cherrypy.redirect ("/fatalerror")
+                raise cherrypy.HTTPRedirect ("/fatalerror")
             # Verify password equivalence.
             if (password <> stored_password):
                 # FIXME: do something more useful here.
-                cherrypy.redirect ("/login")
+                raise cherrypy.HTTPRedirect ("/login")
             else:
                 # If we got this far, the email address was on record, and the password
                 # matches it, so we deem the user to be logged in.  Hooray!
@@ -93,10 +94,10 @@ class LoginPage:
                     user_level = results[sqlutiles.getfieldindex ("level", description)]
                 except:
                     # FIXME: do something more useful here.
-                    cherrypy.redirect ("/fatalerror")
+                    raise cherrypy.HTTPRedirect ("/fatalerror")
                 # If the user level is 2 or higher, the user is an admin user.
                 set_logged_in (user_id, (user_level > 1))
 
         # FIXME: Might want to redirect to some sort of user dashboard page in the future.
-        cherrypy.redirect ("/")
+        raise cherrypy.HTTPRedirect ("/")
     process.exposed = True

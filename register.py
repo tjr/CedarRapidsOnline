@@ -78,7 +78,7 @@ class RegisterPage:
         # filled in, then something unexpected happened, and we shouldn't continue processing
         # the form.
         if (name == None or email == None or password == None or passwordverify == None):
-            cherrypy.redirect ("/register")
+            raise cherrypy.HTTPRedirect ("/register")
         else:
             # Replace single quotes with two single quotes.
             name = sqlutils.quote (str(name))
@@ -121,7 +121,7 @@ class RegisterPage:
                 # FIXME: this is a public user page; provide more interesting feedback in this event.
                 return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
         
-        cherrypy.redirect ("/register/thanks")
+        raise cherrypy.HTTPRedirect ("/register/thanks")
     process.exposed = True
 
     def thanks (self):

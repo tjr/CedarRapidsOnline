@@ -28,7 +28,7 @@ class LogoutPage:
     def index (self):
         # Force the session to expire and redirect.
         cherrypy.lib.sessions.expire()
-        cherrypy.redirect ("/logout/complete")
+        raise cherrypy.HTTPRedirect ("/logout/complete")
     index.exposed = True
 
     def complete (self):

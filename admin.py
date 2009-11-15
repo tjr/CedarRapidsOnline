@@ -87,7 +87,7 @@ class AdminArticlesPage:
                 dbconnection = pgdb.connect (__database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
-                                  "VALUES (:1, :2, :3, :4, :5, current_timestamp)",
+                                  "VALUES (%s, %s, %s, %s, %s, current_timestamp)",
                                   [title, author_id, slug, body, display])
             
                 # Close the database cursor and connection.
@@ -96,7 +96,7 @@ class AdminArticlesPage:
             except:
                 return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
         
-        cherrypy.redirect ("/admin/articles/")
+        raise cherrypy.HTTPRedirect ("/admin/articles/")
 
     def edit (self, article_id = None):
         # Edit form for given article.

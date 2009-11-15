@@ -50,11 +50,9 @@ class ArticlesPage:
             dbcursor.close()
             dbconnection.close()
         except:
-#            cherrypy.redirect ("/404")
             pass
 
         if (results == None):
-            #cherrypy.redirect ("/404")
             pass
 
         # Obtain the article title from the database results.
