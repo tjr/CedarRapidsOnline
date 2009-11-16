@@ -51,8 +51,40 @@ class AdminArticlesPage:
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
 
+        description = None
+        results = None
+        # Try to connect to the database.
+        try:
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            dbcursor.execute ("SELECT * FROM articles")
+            
+            # Get the cursor description and results from the query.
+            description = dbcursor.description
+            results = dbcursor.fetchall()
+            
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            pass
+
+        pagecontents = "<p><a href=\"/admin/articles/new\">Create New Article</a></p>\n"
+        pagecontents += "<h3>Article Listing</h3>\n"
+        pagecontents += "<ul>\n"
+        if (results == []):
+            pagecontents += "<li>No articles found in database.</li>\n"
+        for result in results:
+            try:
+                title = results[sqlutils.getfieldindex ("title", description)]
+                slug = results[sqlutils.getfieldindex ("slug", description)]
+                pagecontents += "<li><a href=\"/admin/articles/edit/" + slug + "\">" + title + "</a></li>\n"
+            except:
+                pass
+        pagecontents += "</ul>\n"
+
         # Present listing of all articles.
-        return pageutils.generate_page ("Articles Administration", "<a href=\"/admin/articles/new\">New</a>")
+        return pageutils.generate_page ("Articles Administration", pagecontents)
     index.exposed = True
 
     def new (self, edit=False, title=None, slug=None, display=None, body=None, article_id=None):
