@@ -28,8 +28,16 @@ import crypt
 database_connect_fields = sqlutils.database_connect_fields
 
 class LoginPage:
-    def index (self):
-        pagetext = "<form action=\"/login/process\" method=\"post\">"
+    def index (self, errornotfound=False, errorbadpassword=False):
+        pagetext = ""
+        if (errornotfound or errorbadpassword):
+            pagetext += "<div class=\"error\"><h2>Error</h2><ul>\n"
+            if (errornotfound):
+                pagetext += "<li>Email address not found. Have you <a href=\"/register\">registered</a> yet?</li>\n"
+            if (errorbadpassword):
+                pagetext += "<li>Incorrect password provided.</li>\n"
+            pagetext += "</ul></div>\n"
+        pagetext += "<form action=\"/login/process\" method=\"post\">"
         pagetext += "<b>Email Address</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"email\">"
@@ -73,8 +81,7 @@ class LoginPage:
         
         # If we don't have any results, the email address wasn't on record.
         if (results == None):
-            # FIXME: do something more useful here.
-            raise cherrypy.HTTPRedirect ("/login?email")
+            return self.index (errornotfound=True)
         else:
             stored_password = ""
             try:
@@ -84,8 +91,7 @@ class LoginPage:
                 raise cherrypy.HTTPRedirect ("/fatalerror")
             # Verify password equivalence.
             if (password <> stored_password):
-                # FIXME: do something more useful here.
-                raise cherrypy.HTTPRedirect ("/login?passwordmismatch")
+                return self.index (errorbadpassword=True)
             else:
                 # If we got this far, the email address was on record, and the password
                 # matches it, so we deem the user to be logged in.  Hooray!
