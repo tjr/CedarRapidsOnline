@@ -37,6 +37,8 @@ class ArticlesPage:
 
         description = None
         results = None
+        comments_description = None
+        comments_results = None
         # Try to connect to the database.
         try:
             dbconnection = pgdb.connect (database_connect_fields)
@@ -45,7 +47,14 @@ class ArticlesPage:
             # Get the cursor description and results from the query.
             description = dbcursor.description
             results = dbcursor.fetchone()
-            
+
+            # Get any comments for the article.
+            if (results <> None):
+                dbcursor.execute ("SELECT * FROM articles WHERE refers_to=%s",
+                                  [str(results[sqlutils.getfieldindex ("article_id")])])
+                comments_description = dbcursor.description
+                comments_results = dbcursor.fetchall()
+
             # Close the database cursor and connection.
             dbcursor.close()
             dbconnection.close()
@@ -68,7 +77,14 @@ class ArticlesPage:
             pagetext += results[sqlutils.getfieldindex ("body", description)]
         except:
             pagetext += "<p>Database Error.</p>"
-    
+
+        if (comments_results <> None):
+            pagetext += "<h3>Comments</h3>"
+            for result in results:
+                pagetext += "<p>"
+                pagetext += result[sqlutils.getfieldindex ("body", description)]
+                pagetext += "</p>"
+
         # Build the whole page and return it.
         return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
