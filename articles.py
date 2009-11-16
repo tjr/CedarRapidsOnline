@@ -80,9 +80,9 @@ class ArticlesPage:
 
         if (comments_results <> None):
             pagetext += "<h3>Comments</h3>"
-            for result in results:
+            for result in comments_results:
                 pagetext += "<p>"
-                pagetext += result[sqlutils.getfieldindex ("body", description)]
+                pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
                 pagetext += "</p>"
 
         # Build the whole page and return it.
