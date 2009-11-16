@@ -81,7 +81,55 @@ class ArticlesPage:
     default.exposed = True
 
     def comment (self, article_slug=None):
-        # Add comment to article, available to logged in users.
-        return pageutils.generate_page ("Add a comment", "Comment form goes here.")
+        # Verify user is logged in.
+        if (not pageutils.is_logged_in_p()):
+            raise cherrypy.HTTPRedirect ("/login")
+
+        # Form to add a comment.
+        pagecontents = ""
+        pagecontents += "<form action=\"/articles/addcomment\" method=\"post\">"
+        pagecontents += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
+        pagecontents += "<br><br>"
+        pagecontents += "<input type=\"hidden\" name=\"slug\" value=\"" + str(article_slug) + "\">"
+        pagecontents += "<input type=\"submit\" value=\"Add Comment\">"
+        pagecontents += "</form>"
+
+        return pageutils.generate_page ("Add a comment", pagecontents)
     comment.exposed = True
+
+    def addcomment (self, body, slug):
+        # Verify user is logged in.
+        if (not pageutils.is_logged_in_p()):
+            raise cherrypy.HTTPRedirect ("/login")
+        
+        # Remove any leading or trailing spaces from comment text.
+        body = string.strip(body)
+
+        user_id = pageutils.get_user_id()
+        if (user_id == None):
+            raise cherrypy.HTTPRedirect ("/login")
+        
+        try:
+            # Connect to the database and insert the values.
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            
+            dbcursor.execute ("SELECT * FROM articles WHERE slug=%s", [slug])
+            results = dbcursor.fetchone()
+            if (results == None):
+                return pageutils.generate_page ("Invalid Article Specified", "Unable to post comment.")
+            article_id = results[0] # article_id is the first column in the table.
+
+            dbcursor.execute ("INSERT INTO articles (author_id, body, display, refers_to, creation_date) " +
+                              "VALUES (%s, %s, %s, %s, current_timestamp)",
+                              [str(user_id), body, "1", str(article_id)])
+
+            dbconnection.commit()
+
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            return pageutils.generate_page ("Invalid SQL Query", "Unable to add comment.")
+    addcomment.exposed = True
 

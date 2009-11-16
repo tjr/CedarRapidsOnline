@@ -30,13 +30,17 @@ database_connect_fields = sqlutils.database_connect_fields
 class LoginPage:
     def index (self, errornotfound=False, errorbadpassword=False):
         pagetext = ""
+        
+        # Check to see if we've been here before, with bad user input.
         if (errornotfound or errorbadpassword):
             pagetext += "<div class=\"error\"><h2>Error</h2><ul>\n"
             if (errornotfound):
                 pagetext += "<li>Email address not found. Have you <a href=\"/register\">registered</a> yet?</li>\n"
             if (errorbadpassword):
                 pagetext += "<li>Incorrect password provided.</li>\n"
-            pagetext += "</ul></div><p>\n"
+            pagetext += "</ul></div><br><br>\n"
+
+        # Build the login form.
         pagetext += "<form action=\"/login/process\" method=\"post\">"
         pagetext += "<b>Email Address</b>:"
         pagetext += "<br>"
