@@ -20,7 +20,7 @@
 
 import cherrypy
 import pgdb
-
+import string
 import sqlutils
 import pageutils
 
@@ -84,6 +84,9 @@ class ArticlesPage:
         # Verify user is logged in.
         if (not pageutils.is_logged_in_p()):
             raise cherrypy.HTTPRedirect ("/login")
+
+        if (article_slug == None):
+            return pageutils.generate_page ("No Article Specified", "Unable to add comment.")
 
         # Form to add a comment.
         pagecontents = ""
