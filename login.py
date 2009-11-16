@@ -36,7 +36,7 @@ class LoginPage:
                 pagetext += "<li>Email address not found. Have you <a href=\"/register\">registered</a> yet?</li>\n"
             if (errorbadpassword):
                 pagetext += "<li>Incorrect password provided.</li>\n"
-            pagetext += "</ul></div>\n"
+            pagetext += "</ul></div><p>\n"
         pagetext += "<form action=\"/login/process\" method=\"post\">"
         pagetext += "<b>Email Address</b>:"
         pagetext += "<br>"
