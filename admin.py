@@ -138,7 +138,7 @@ class AdminArticlesPage:
                 if (edit):
                     if (article_id == None):
                         return pageutils.generate_page ("No Article Id Specified", "No Article Id Specified")
-                    dbcursor.execute ("UPDATE articles SET title=%s, slug=%s, body=%s, display=%d, WHERE article_id=%d",
+                    dbcursor.execute ("UPDATE articles SET title=%s, slug=%s, body=%s, display=%d WHERE article_id=%d",
                                       [title, slug, body, int(display), int(article_id)])
                 else:
                     dbcursor.execute ("INSERT INTO articles (title, author_id, slug, body, display, creation_date) " +
