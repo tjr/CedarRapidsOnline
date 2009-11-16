@@ -76,8 +76,8 @@ class AdminArticlesPage:
             pagecontents += "<li>No articles found in database.</li>\n"
         for result in results:
             try:
-                title = results[sqlutils.getfieldindex ("title", description)]
-                slug = results[sqlutils.getfieldindex ("slug", description)]
+                title = result[sqlutils.getfieldindex ("title", description)]
+                slug = result[sqlutils.getfieldindex ("slug", description)]
                 pagecontents += "<li><a href=\"/admin/articles/edit/" + slug + "\">" + title + "</a></li>\n"
             except:
                 pass
