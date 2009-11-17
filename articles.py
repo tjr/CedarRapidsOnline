@@ -39,6 +39,8 @@ class ArticlesPage:
         results = None
         comments_description = None
         comments_results = None
+        authors_results = []
+        author_description = None
         # Try to connect to the database.
         try:
             dbconnection = pgdb.connect (database_connect_fields)
@@ -54,6 +56,11 @@ class ArticlesPage:
                                   [str(results[sqlutils.getfieldindex ("article_id", description)])])
                 comments_description = dbcursor.description
                 comments_results = dbcursor.fetchall()
+                for result in comments_results:
+                    dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
+                                      [str(result[sqlutils.getfieldindex ("author_id", comments_description)])])
+                    author_description = dbcursor.description
+                    authors_results.append (dbcursor.fetchone())
 
             # Close the database cursor and connection.
             dbcursor.close()
@@ -85,6 +92,10 @@ class ArticlesPage:
                 for result in comments_results:
                     pagetext += "<p>"
                     pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
+                    for author in author_results:
+                        if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
+                            pagetext += "<p>&mdash; " + author[sqlutils.getfieldindex ("name", author_description)]
+                            pagetext += "</p>\n"
                     pagetext += "</p>"
             if (pageutils.is_logged_in_p()):
                 pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
