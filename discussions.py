@@ -23,7 +23,6 @@ import pgdb
 import string
 import sqlutils
 import pageutils
-import sys
 
 database_connect_fields = sqlutils.database_connect_fields
 
@@ -52,7 +51,7 @@ class DiscussionsPage:
                 # Try to connect to the database.
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
-                dbcursor.execute ("SELECT * FROM discussions WHERE refers_to IS null SORT BY creation_date")
+                dbcursor.execute ("SELECT * FROM discussions WHERE refers_to=null ORDER BY creation_date")
                 # Get the cursor description and results from the query.
                 description = dbcursor.description
                 results = dbcursor.fetchall()
@@ -68,8 +67,7 @@ class DiscussionsPage:
                 dbconnection.close()
             except:
                 return pageutils.generate_page ("Database Error",
-                                                "<div class=\"error\">Can't get discussion data." +
-                                                sys.exc_info()[0] + "</div>\n")
+                                                "<div class=\"error\">Can't get discussion data.</div>\n")
 
             pagetext = "<a href=\"/discussions/new\">Start New Discussion</a>\n"
             pagetext += "<ul>\n"
