@@ -117,7 +117,7 @@ class DiscussionsPage:
         pagetext = ""
         pagetitle = "Start a New Discussion"
 
-        pagetext += "<form action=\"/discusions/process\" method=\"post\">"
+        pagetext += "<form action=\"/discussions/process\" method=\"post\">"
         pagetext += "<b>Subject</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"subject\">\n"

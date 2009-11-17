@@ -28,6 +28,13 @@ import crypt
 database_connect_fields = sqlutils.database_connect_fields
 
 class LoginPage:
+    def default(self, accessviolation=None, errornotfound=False, errorbadpassword=False):
+        # We want to be able to have URLs like /login/accessviolation
+        # The CherryPy index methods can't accept parameters like that, but
+        # instead we route through the default method.  QED.
+        return self.index (accessviolation, errornotfound, errorbadpassword)
+    default.exposed = True
+
     def index (self, accessviolation=None, errornotfound=False, errorbadpassword=False):
         pagetext = ""
         
