@@ -143,11 +143,12 @@ class DiscussionsPage:
         subject = string.strip(subject)
 
         # Make sure refers_to, if it exists, is an integer.
-        try:
-            refers_to = str(int(refers_to))
-        except:
-            return pageutils.generate_page ("Invalid Reference",
-                                            "<div class=\"error\">Unable to add discussion element.</div>\n")
+        if (refers_to <> None):
+            try:
+                refers_to = str(int(refers_to))
+            except:
+                return pageutils.generate_page ("Invalid Reference",
+                                                "<div class=\"error\">Unable to add discussion element.</div>\n")
 
         user_id = pageutils.get_user_id()
         if (user_id == None):

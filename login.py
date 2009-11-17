@@ -40,7 +40,7 @@ class LoginPage:
         
         # Check to see if we've been redirected here from an access violation.
         if (accessviolation <> None):
-            pagetext += "<div class=\"notice\"><h2>Notice</h2>You must be logged in to access that page.</div>\n"
+            pagetext += "<div class=\"notice\"><h2>Notice</h2>You must be logged in to access that page.</div><br><br>\n"
 
         # Check to see if we've been here before, with bad user input.
         if (errornotfound or errorbadpassword):
