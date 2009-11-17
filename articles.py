@@ -41,8 +41,10 @@ class ArticlesPage:
         comments_results = None
         author_results = []
         author_description = None
-        # Try to connect to the database.
+       
+        # Get article, comment, and comment-author data from database.
         try:
+            # Try to connect to the database.
             dbconnection = pgdb.connect (database_connect_fields)
             dbcursor = dbconnection.cursor()
             dbcursor.execute ("SELECT * FROM articles WHERE slug=%s", [article_slug])
@@ -56,6 +58,7 @@ class ArticlesPage:
                                   [str(results[sqlutils.getfieldindex ("article_id", description)])])
                 comments_description = dbcursor.description
                 comments_results = dbcursor.fetchall()
+                # Store the user info for the author of the comment, for use when we display the comment.
                 for result in comments_results:
                     dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
                                       [str(result[sqlutils.getfieldindex ("author_id", comments_description)])])
@@ -88,18 +91,23 @@ class ArticlesPage:
         # Do we want to show comments on this page?
         if (int(results[sqlutils.getfieldindex ("display", description)]) > 1):
             pagetext += "<hr><h3>User Comments</h3>"
+            # Do we have any comments to show?
             if (comments_results <> None):
                 for result in comments_results:
                     pagetext += "<p>"
                     pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
                     for author in author_results:
+                        # Find the author info to display.
                         if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
                             pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
                             pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</i></p>\n"
+                    # If the user is admin, post link to delete the comment.
                     if (pageutils.is_admin_p()):
-                        pagetext += "<p>[<a href=\"/admin/articles/delete/" + str(result[sqlutils.getfieldindex ("article_id", comments_description)]) + "\">Delete Comment</a>]</p>\n"
+                        pagetext += "<p>[<a href=\"/admin/articles/delete/" +
+                        str(result[sqlutils.getfieldindex ("article_id", comments_description)]) + "\">Delete Comment</a>]</p>\n"
                     pagetext += "</p>"
                     pagetext += "<hr width=50%>\n"
+            # If user is logged in, post link to add a comment.
             if (pageutils.is_logged_in_p()):
                 pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
             else:

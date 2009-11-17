@@ -19,6 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cherrypy
+import pgdb
+import string
+import sqlutils
+import pageutils
+
+database_connect_fields = sqlutils.database_connect_fields
 
 class DiscussionsPage:
     def index (self, discussion_id=None):
@@ -29,12 +35,42 @@ class DiscussionsPage:
     index.exposed = True
 
     def comment (self, discussion_id):
-        # Add comment to discussion, available to logged in users.
-        pass
+        # Verify user is logged in.
+        if (not pageutils.is_logged_in_p()):
+            raise cherrypy.HTTPRedirect ("/login")
+        
+        pagetext = ""
+        pagetitle = "Add a Comment"
+
+        pagetext += "<form action=\"/discussions/processcomment\" method=\"post\">"
+        pagetext += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
+        pagetext += "<br><br>"
+        pagetext += "<input type=\"hidden\" name=\"refers_to\" value=\"" + (str(discussion_id)) + "\">\n"
+        pagetext += "<input type=\"submit\" value=\"Add Comment\">"
+        pagetext += "</form>"
+        
+        return pageutils.generate_page (pagetitle, pagetext)
     comment.exposed = True
 
     def new (self):
-        # Create new discussion, available to logged in users.
-        pass
+        # Verify user is logged in.
+        if (not pageutils.is_logged_in_p()):
+            raise cherrypy.HTTPRedirect ("/login")
+        
+        pagetext = ""
+        pagetitle = "Start a New Discussion"
+
+        pagetext += "<form action=\"/discusions/processnew\" method=\"post\">"
+        pagetext += "<b>Subject</b>:"
+        pagetext += "<br>"
+        pagetext += "<input type=\"text\" name=\"subject\">\n"
+        pagetext += "<br><br>"
+        pagetext += "<b>Message</b>:\n<br>\n"
+        pagetext += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
+        pagetext += "<br><br>"
+        pagetext += "<input type=\"submit\" value=\"Start New Discussion\">"
+        pagetext += "</form>"
+        
+        return pageutils.generate_page (pagetitle, pagetext)
     new.exposed = True
 
