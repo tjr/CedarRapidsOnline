@@ -57,7 +57,8 @@ class DiscussionsPage:
                 results = dbcursor.fetchall()
 
                 for result in results:
-                    dbcursor.execute ("SELECT * FROM users WHERE user_id=%s", str(result[0])) # FIXME: [0] is kinda cheating
+                    dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
+                                      [str(sqlutils.getfieldindex("author_id", description))]) # FIXME: [0] is kinda cheating
                     author_description = dbcursor.description
                     author_results.append (dbcursor.fetchone())
 
@@ -80,7 +81,9 @@ class DiscussionsPage:
                         pagetext += author[sqlutils.getfieldindex ("name", author_description)]
                 pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", description)] + ")\n"
                 pagetext += "</li>\n"
-        pass
+            return pageutils.generate_page ("Discussions", pagetext)
+        else:
+            pass
     index.exposed = True
 
     def comment (self, discussion_id=None):
