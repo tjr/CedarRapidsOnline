@@ -23,6 +23,7 @@ import pgdb
 import string
 import sqlutils
 import pageutils
+import sys
 
 database_connect_fields = sqlutils.database_connect_fields
 
@@ -67,7 +68,8 @@ class DiscussionsPage:
                 dbconnection.close()
             except:
                 return pageutils.generate_page ("Database Error",
-                                                "<div class=\"error\">Can't get discussion data.</div>\n")
+                                                "<div class=\"error\">Can't get discussion data." +
+                                                sys.exc_info()[0] + "</div>\n")
 
             pagetext = "<a href=\"/discussions/new\">Start New Discussion</a>\n"
             pagetext += "<ul>\n"
