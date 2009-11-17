@@ -51,7 +51,7 @@ class ArticlesPage:
             # Get any comments for the article.
             if (results <> None):
                 dbcursor.execute ("SELECT * FROM articles WHERE refers_to=%s",
-                                  [str(results[sqlutils.getfieldindex ("article_id")])])
+                                  [str(results[sqlutils.getfieldindex ("article_id", description)])])
                 comments_description = dbcursor.description
                 comments_results = dbcursor.fetchall()
 
@@ -78,12 +78,18 @@ class ArticlesPage:
         except:
             pagetext += "<p>Database Error.</p>"
 
-        if (comments_results <> None):
+        # Do we want to show comments on this page?
+        if (int(results[sqlutils.getfieldindex ("display", description)]) > 1):
             pagetext += "<h3>Comments</h3>"
-            for result in comments_results:
-                pagetext += "<p>"
-                pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
-                pagetext += "</p>"
+            if (comments_results <> None):
+                for result in comments_results:
+                    pagetext += "<p>"
+                    pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
+                    pagetext += "</p>"
+            if (pageutils.is_logged_in_p()):
+                pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
+            else:
+                pagetext += "<p><a href=\"/login\">Log in</a> to add a comment</a></p>\n"
 
         # Build the whole page and return it.
         return pageutils.generate_page (pagetitle, pagetext)
