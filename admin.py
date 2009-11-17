@@ -118,7 +118,7 @@ class AdminArticlesPage:
         pagecontents += "<option value=\"0\">Do not display</option>\n"
         pagecontents += "<option value=\"1\">Display with no comments</option>\n"
         pagecontents += "<option value=\"2\" selected=\"selected\">Display with comments (default)</option>\n"
-        pagecontenst += "</select>\n"
+        pagecontents += "</select>\n"
         pagecontents += "<br><br>"
         pagecontents += "<b>Body</b>:"
         pagecontents += "<br>"
