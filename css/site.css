@@ -46,6 +46,13 @@ div.error {
     padding-top: 5px;
 }
 
+div.notice {
+    border: solid 3px #444;
+    background: #BFB;
+    padding: 10px;
+    padding-top: 5px;
+}
+
 img.logo {
 	border: none;
 	padding-top: 10px;

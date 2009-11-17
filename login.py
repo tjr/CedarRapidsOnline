@@ -28,9 +28,13 @@ import crypt
 database_connect_fields = sqlutils.database_connect_fields
 
 class LoginPage:
-    def index (self, errornotfound=False, errorbadpassword=False):
+    def index (self, accessviolation=None, errornotfound=False, errorbadpassword=False):
         pagetext = ""
         
+        # Check to see if we've been redirected here from an access violation.
+        if (accessviolation <> None):
+            pagetext += "<div class=\"notice\"><h2>Notice</h2>You must be logged in to access that page.</div>\n"
+
         # Check to see if we've been here before, with bad user input.
         if (errornotfound or errorbadpassword):
             pagetext += "<div class=\"error\"><h2>Error</h2><ul>\n"
