@@ -97,6 +97,8 @@ class ArticlesPage:
                     pagetext += "<p>"
                     pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
                     for author in author_results:
+                        if author == None:
+                            continue
                         # Find the author info to display.
                         if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
                             pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]

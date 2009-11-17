@@ -75,8 +75,10 @@ class DiscussionsPage:
                 pagetext += "<li>\n"
                 pagetext += ("<a href=\"/discussions/" +
                              str(result[sqlutils.getfieldindex ("discussion_id", description)]) +
-                             "\">" + result[sqlutils.getfieldindex ("subject", description)] + " (posted by ")
+                             "\">" + result[sqlutils.getfieldindex ("subject", description)] + "</a> (posted by ")
                 for author in author_results:
+                    if author == None:
+                        continue
                     if author[0] == result[sqlutils.getfieldindex ("author_id", description)]:
                         pagetext += author[sqlutils.getfieldindex ("name", author_description)]
                 pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", description)] + ")\n"
