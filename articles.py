@@ -103,8 +103,9 @@ class ArticlesPage:
                             pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</i></p>\n"
                     # If the user is admin, post link to delete the comment.
                     if (pageutils.is_admin_p()):
-                        pagetext += "<p>[<a href=\"/admin/articles/delete/" +
-                        str(result[sqlutils.getfieldindex ("article_id", comments_description)]) + "\">Delete Comment</a>]</p>\n"
+                        pagetext += ("<p>[<a href=\"/admin/articles/delete/" +
+                                     str(result[sqlutils.getfieldindex ("article_id", comments_description)]) +
+                                     "\">Delete Comment</a>]</p>\n")
                     pagetext += "</p>"
                     pagetext += "<hr width=50%>\n"
             # If user is logged in, post link to add a comment.
