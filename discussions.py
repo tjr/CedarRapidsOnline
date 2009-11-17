@@ -74,7 +74,7 @@ class DiscussionsPage:
             for result in results:
                 pagetext += "<li>\n"
                 pagetext += ("<a href=\"/discussions/" +
-                             result[sqlutils.getfieldindex ("discussion_id", description)] +
+                             str(result[sqlutils.getfieldindex ("discussion_id", description)]) +
                              "\">" + result[sqlutils.getfieldindex ("subject", description)] + " (posted by ")
                 for author in author_results:
                     if author[0] == result[sqlutils.getfieldindex ("author_id", description)]:
