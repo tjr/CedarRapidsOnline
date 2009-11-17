@@ -39,7 +39,7 @@ class ArticlesPage:
         results = None
         comments_description = None
         comments_results = None
-        authors_results = []
+        author_results = []
         author_description = None
         # Try to connect to the database.
         try:
@@ -60,7 +60,7 @@ class ArticlesPage:
                     dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
                                       [str(result[sqlutils.getfieldindex ("author_id", comments_description)])])
                     author_description = dbcursor.description
-                    authors_results.append (dbcursor.fetchone())
+                    author_results.append (dbcursor.fetchone())
 
             # Close the database cursor and connection.
             dbcursor.close()
