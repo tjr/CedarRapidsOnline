@@ -78,7 +78,9 @@ class AdminArticlesPage:
             try:
                 title = result[sqlutils.getfieldindex ("title", description)]
                 slug = result[sqlutils.getfieldindex ("slug", description)]
-                pagecontents += "<li><a href=\"/admin/articles/edit/" + slug + "\">" + title + "</a></li>\n"
+                article_id = result[sqlutils.getfieldindex ("article_id", description)]
+                pagecontents += "<li><a href=\"/admin/articles/edit/" + slug + "\">" + title + "</a>\n"
+                pagecontents += "[<a href=\"/admin/articles/delete/" + article_id + "\">Delete</a>]</li>\n"
             except:
                 pass
         pagecontents += "</ul>\n"
@@ -187,6 +189,40 @@ class AdminArticlesPage:
         
         raise cherrypy.HTTPRedirect ("/admin/articles/")
     processnew.exposed = True
+
+    def delete (self, article_id=None):
+        # Verify user is logged-in admin
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+        
+        pagetext = "<p><a href=\"/admin/articles/processdelete/" + str(article_id) + "\">Confirm article/comment deletion</a></p>\n"
+        return pageutils.generate_page ("Confirm Deletion", pagetext)
+    delete.exposed = True
+
+    def processdelete (self, article_id=None):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
+        # Verify we have an article_id
+        if (article_id == None):
+            return pageutils.generate_page ("No Article Id Specified", "Nothing to delete!")
+
+        try:
+            # Connect to the database and delete the given article.
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            dbcursor.execute ("DELETE FROM articles WHERE article_id=%s", [str(article_id)])
+            dbconnection.commit()
+
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            return pageutils.generate_page ("Database Error", "Deletion failed!")
+
+        return pageutils.generate_page ("Successful Deletion", "The specified article/comment has been deleted.")
+    processdelete.exposed = True
 
     def edit (self, article_slug = None):
         # Verify user is logged-in admin.
