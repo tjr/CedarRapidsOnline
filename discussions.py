@@ -51,7 +51,7 @@ class DiscussionsPage:
                 # Try to connect to the database.
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
-                dbcursor.execute ("SELECT * FROM discussions WHERE refers_to=null ORDER BY creation_date")
+                dbcursor.execute ("SELECT * FROM discussions WHERE refers_to IS null ORDER BY creation_date")
                 # Get the cursor description and results from the query.
                 description = dbcursor.description
                 results = dbcursor.fetchall()
@@ -81,6 +81,7 @@ class DiscussionsPage:
                         pagetext += author[sqlutils.getfieldindex ("name", author_description)]
                 pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", description)] + ")\n"
                 pagetext += "</li>\n"
+            pagetext += "</ul>\n"
             return pageutils.generate_page ("Discussions", pagetext)
         else:
             pass
