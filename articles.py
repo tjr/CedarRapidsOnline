@@ -95,8 +95,9 @@ class ArticlesPage:
                     for author in author_results:
                         if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
                             pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
-                            pagetext += "on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</p>\n"
+                            pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</i></p>\n"
                     pagetext += "</p>"
+                    pagetext += "<hr width=50%>\n"
             if (pageutils.is_logged_in_p()):
                 pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
             else:
