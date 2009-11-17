@@ -87,7 +87,7 @@ class ArticlesPage:
 
         # Do we want to show comments on this page?
         if (int(results[sqlutils.getfieldindex ("display", description)]) > 1):
-            pagetext += "<h3>Comments</h3>"
+            pagetext += "<hr><h3>User Comments</h3>"
             if (comments_results <> None):
                 for result in comments_results:
                     pagetext += "<p>"
