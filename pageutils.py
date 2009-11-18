@@ -55,6 +55,42 @@ def set_logged_in (user_id, is_admin_p=False):
     else:
         cherrypy.session['is_admin_p'] = 'False'
 
+# Get year from a PostgreSQL timestamp.
+def get_year (t):
+    return t[0:4]
+
+# Get month name from a PostgreSQL timestamp.
+def get_month (t):
+    m = int(t[5:7])
+    if (m == 1):
+        return "January"
+    elif (m == 2):
+        return "February"
+    elif (m == 3):
+        return "March"
+    elif (m == 4):
+        return "April"
+    elif (m == 5):
+        return "May"
+    elif (m == 6):
+        return "June"
+    elif (m == 7):
+        return "July"
+    elif (m == 8):
+        return "August"
+    elif (m == 9):
+        return "September"
+    elif (m == 10):
+        return "October"
+    elif (m == 11):
+        return "November"
+    else:
+        return "December"
+
+# Get day from a PostgreSQL timestamp.
+def get_day (t):
+    return t[8:10]
+
 # Return a basic page header template, including header menu.
 def generate_header (title=""):
     # Return value string.

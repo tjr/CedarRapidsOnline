@@ -19,22 +19,68 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import cherrypy
+import pgdb
+import string
+import sqlutils
+import pageutils
+
+database_connect_fields = sqlutils.database_connect_fields
 
 class EventsPage:
+    def default(self, event_id=None):
+        # We want to be able to have URLs like /events/event-id
+        # The CherryPy index methods can't accept parameters like that, but
+        # instead we route through the default method.  QED.
+        return self.index (event_id)
+    default.exposed = True
 
     def index (self, event_id=None):
         # If event_id is None, display main event table of contents.
         # Else, display specified event details.
         # Available to all, logged in or not.
-        pass
+        
+        # Build table of contents.
+        if (event_id == None):
+            description = None
+            results = None
+
+            # Get event listing from database
+            try:
+                # Try to connect to the database.
+                dbconnection = pgdb.connect (database_connect_fields)
+                dbcursor = dbconnection.cursor()
+                dbcursor.execute ("SELECT * FROM events WHERE ORDER BY start_date")
+                
+                # Get the cursor description and results from the query.
+                description = dbcursor.description
+                results = dbcursor.fetchall()
+
+                # Close the database cursor and connection.
+                dbcursor.close()
+                dbconnection.close()
+            except:
+                return pageutils.generate_page ("Database Error",
+                                                "<div class=\"error\">Can't get discussion data.</div>\n")
+            # Build the page.
+            pagetext = "<ul>\n"
+            for result in results:
+                start_date = result[sqlutils.getfieldindex("start_date", description)]
+                end_date = result[sqlutils.getfieldindex("end_date", description)]
+                pagetext += ("<li>" + "<a href=\"/events/" +
+                             result[sqlutils.getfieldindex("event_id", description)] + "\">" +
+                             result[sqlutils.getfieldindex("title", description)] + "</a> (" +
+                             pageutils.get_month (start_date) + " " + pageutils.get_day (start_date))
+                if (result[sqlutils.getfieldindex("end_date")] <> None):
+                    pagetext += " - " + pageutils.get_month (end_date) + " " + pageutils.get_day (end_date)
+                pagetext += ")</li>\n"
+                    
+        # Show specific event.
+        else:
+            pass
     index.exposed = True
 
-    def new (req):
+    def new (self):
         # Create new event, available to logged in users.
         pass
     new.exposed = True
 
-    def admin_edit (req, event_id):
-        # Edit specified event, available to ADMIN users.
-        pass
-    admin_edit.exposed = True

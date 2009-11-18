@@ -121,7 +121,6 @@ create table events (
       	event_id		serial primary key,
        	-- currently unused, but might be useful someday
        	category		int4,
-       	-- if null, then a top-level posting, not a reply
        	author_id	        int8 not null,
        	creation_date		timestamp (0),
        	title			varchar (300),
