@@ -179,7 +179,7 @@ class DiscussionsPage:
                 pagetext += "<p><a href=\"/login\">Log in</a> to add a reply</a></p>\n"
             
             # Generate page
-            return page_utils.generate_page (pagetitle, pagetext)
+            return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
 
     def comment (self, discussion_id=None):
