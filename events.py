@@ -73,6 +73,7 @@ class EventsPage:
                 if (result[sqlutils.getfieldindex("end_date")] <> None):
                     pagetext += " - " + pageutils.get_month (end_date) + " " + pageutils.get_day (end_date)
                 pagetext += ")</li>\n"
+            return pageutils.generate_page ("Events", pagetext)
                     
         # Show specific event.
         else:
