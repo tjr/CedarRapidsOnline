@@ -152,8 +152,8 @@ class DiscussionsPage:
             pagetext += "<hr width=\"50%\">\n"
             pagetext += "<h3>Replies</h3>\n"
             # Do we have any replies to show?
-            if (replies_results <> None):
-                for result in replies_results:
+            if (reply_results <> None):
+                for result in reply_results:
                     pagetext += "<p>"
                     pagetext += result[sqlutils.getfieldindex ("body", description)]
                     for author in author_results:
