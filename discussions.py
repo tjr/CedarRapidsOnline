@@ -203,7 +203,7 @@ class DiscussionsPage:
         pagetext += "</form>"
         
         return pageutils.generate_page (pagetitle, pagetext)
-    comment.exposed = True
+    reply.exposed = True
 
     def new (self):
         # Verify user is logged in.
