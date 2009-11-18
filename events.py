@@ -73,9 +73,9 @@ class EventsPage:
                 pagetext += ("<li>" + "<a href=\"/events/" +
                              result[sqlutils.getfieldindex("event_id", description)] + "\">" +
                              result[sqlutils.getfieldindex("title", description)] + "</a> (" +
-                             pageutils.get_month (start_date) + " " + pageutils.get_day (start_date))
+                             str(pageutils.get_month (start_date)) + " " + str(pageutils.get_day (start_date)))
                 if (result[sqlutils.getfieldindex("end_date")] <> None):
-                    pagetext += " - " + pageutils.get_month (end_date) + " " + pageutils.get_day (end_date)
+                    pagetext += " - " + pageutils.get_month (end_date) + " " + str(pageutils.get_day (end_date))
                 pagetext += ")</li>\n"
             pagetext += "</ul>\n"
             return pageutils.generate_page ("Events", pagetext)
@@ -106,9 +106,9 @@ class EventsPage:
             pagetext = ""
             start_date = result[sqlutils.getfieldindex("start_date", description)]
             end_date = result[sqlutils.getfieldindex("end_date", description)]
-            pagetext += "<h3>" + pageutils.get_month (start_date) + " " + pageutils.get_day (start_date)
+            pagetext += "<h3>" + pageutils.get_month (start_date) + " " + str(pageutils.get_day (start_date))
             if (end_date <> None):
-                pagetext += " - " + pageutils.get_month (end_date) + " " + pageutils.get_day (end_date)
+                pagetext += " - " + pageutils.get_month (end_date) + " " + str(pageutils.get_day (end_date))
                 pagetext += " " + pageutils.get_year (end_date)
             else:
                 pagetext += " " + pageutils.get_year (start_date)
