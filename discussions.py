@@ -149,6 +149,7 @@ class DiscussionsPage:
                     pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
                     pagetext += (" on " + results[sqlutils.getfieldindex ("creation_date", description)] +
                                  "</i></p>\n")
+                    break
             pagetext += "<hr width=\"50%\">\n"
             pagetext += "<h3>Replies</h3>\n"
             # Do we have any replies to show?
@@ -165,6 +166,7 @@ class DiscussionsPage:
                             pagetext += (" on " +
                                          result[sqlutils.getfieldindex ("creation_date", description)] +
                                          "</i></p>\n")
+                            break
                     # If the user is admin, post link to delete the reply.
                     if (pageutils.is_admin_p()):
                         pagetext += ("<p>[<a href=\"/admin/discussions/delete/" +

@@ -103,6 +103,7 @@ class ArticlesPage:
                         if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
                             pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
                             pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</i></p>\n"
+                            break
                     # If the user is admin, post link to delete the comment.
                     if (pageutils.is_admin_p()):
                         pagetext += ("<p>[<a href=\"/admin/articles/delete/" +
