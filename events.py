@@ -68,8 +68,8 @@ class EventsPage:
                 start_date = result[sqlutils.getfieldindex("start_date", description)]
                 end_date = result[sqlutils.getfieldindex("end_date", description)]
                 if (most_recent_month <> pageutils.get_month (start_date)):
-                    most_recent_month = start_date
-                    pagetext += "<h3>" + most_recent_month + "</h3>\n"
+                    most_recent_month = pageutils.get_month(start_date)
+                    pagetext += "</ul><h3>" + most_recent_month + "</h3><ul>\n"
                 pagetext += ("<li>" + "<a href=\"/events/" +
                              str(result[sqlutils.getfieldindex("event_id", description)]) + "\">" +
                              result[sqlutils.getfieldindex("title", description)] + "</a> (" +
@@ -83,7 +83,7 @@ class EventsPage:
         # Show specific event.
         else:
             description = None
-            results = None
+            result = None
 
             # Get event listing from database
             try:
@@ -94,7 +94,7 @@ class EventsPage:
                 
                 # Get the cursor description and results from the query.
                 description = dbcursor.description
-                results = dbcursor.fetchone()
+                result = dbcursor.fetchone()
 
                 # Close the database cursor and connection.
                 dbcursor.close()
