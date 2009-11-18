@@ -73,7 +73,11 @@ class DiscussionsPage:
                                                 "<div class=\"error\">Can't get discussion data.</div>\n")
 
             # Build the page.
-            pagetext = "<a href=\"/discussions/new\">Start New Discussion</a>\n"
+            pagetext = ""
+            if (pageutils.is_logged_in_p()):
+                pagetext += "<a href=\"/discussions/new\">Start New Discussion</a>\n"
+            else:
+                pagetext += "<a href=\"/login\">Log In</a> to start a new discussion</a>\n"
             pagetext += "<ul>\n"
             for result in results:
                 pagetext += "<li>\n"
