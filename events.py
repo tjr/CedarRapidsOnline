@@ -136,7 +136,7 @@ class EventsPage:
         pagecontents += "<input type=\"text\" "
         if (title <> None):
             pagecontents += "value=\"" + title + "\" "
-        pagecontenst += "name=\"title\">"
+        pagecontents += "name=\"title\">"
         pagecontents += "<br><br>\n"
         pagecontents += "<b>Description</b>:"
         pagecontents += "<br>"
