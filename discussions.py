@@ -52,14 +52,17 @@ class DiscussionsPage:
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
                 dbcursor.execute ("SELECT * FROM discussions WHERE refers_to IS null ORDER BY creation_date")
+                
                 # Get the cursor description and results from the query.
                 description = dbcursor.description
                 results = dbcursor.fetchall()
 
+                # Get and store the user (author) data.
                 for result in results:
                     dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
-                                      [str(sqlutils.getfieldindex("author_id", description))]) # FIXME: [0] is kinda cheating
-                    author_description = dbcursor.description
+                                      [str(sqlutils.getfieldindex("author_id", description))])
+                    if (dbcursor.description <> None):
+                        author_description = dbcursor.description
                     author_results.append (dbcursor.fetchone())
 
                 # Close the database cursor and connection.
