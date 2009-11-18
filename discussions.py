@@ -60,7 +60,7 @@ class DiscussionsPage:
                 # Get and store the user (author) data.
                 for result in results:
                     dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
-                                      [str(sqlutils.getfieldindex("author_id", description))])
+                                      [result[str(sqlutils.getfieldindex("author_id", description))]])
                     if (dbcursor.description <> None):
                         author_description = dbcursor.description
                     author_results.append (dbcursor.fetchone())
