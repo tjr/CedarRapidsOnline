@@ -74,7 +74,7 @@ class EventsPage:
                              str(result[sqlutils.getfieldindex("event_id", description)]) + "\">" +
                              result[sqlutils.getfieldindex("title", description)] + "</a> (" +
                              str(pageutils.get_month (start_date)) + " " + str(pageutils.get_day (start_date)))
-                if (result[sqlutils.getfieldindex("end_date")] <> None):
+                if (result[sqlutils.getfieldindex("end_date"), description] <> None):
                     pagetext += " - " + pageutils.get_month (end_date) + " " + str(pageutils.get_day (end_date))
                 pagetext += ")</li>\n"
             pagetext += "</ul>\n"
