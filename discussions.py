@@ -161,7 +161,7 @@ class DiscussionsPage:
                             continue
                         # Find the author info to display.
                         if author[0] == result[sqlutils.getfieldindex ("author_id", description)]:
-                            pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", description)]
+                            pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
                             pagetext += (" on " +
                                          result[sqlutils.getfieldindex ("creation_date", description)] +
                                          "</i></p>\n")
