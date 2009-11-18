@@ -235,8 +235,10 @@ class DiscussionsPage:
         # FIXME: Make sure we have all of the data we need in the form.
 
         # Remove any leading or trailing spaces from comment text.
-        body = string.strip(body)
-        subject = string.strip(subject)
+        if (body <> None):
+            body = string.strip(body)
+        if (subject <> None):
+            subject = string.strip(subject)
 
         # Make sure refers_to, if it exists, is an integer.
         if (refers_to <> None):
