@@ -82,10 +82,43 @@ class EventsPage:
                     
         # Show specific event.
         else:
-            pass
+            description = None
+            results = None
+
+            # Get event listing from database
+            try:
+                # Try to connect to the database.
+                dbconnection = pgdb.connect (database_connect_fields)
+                dbcursor = dbconnection.cursor()
+                dbcursor.execute ("SELECT * FROM events WHERE event_id=%s", [str(event_id)])
+                
+                # Get the cursor description and results from the query.
+                description = dbcursor.description
+                results = dbcursor.fetchone()
+
+                # Close the database cursor and connection.
+                dbcursor.close()
+                dbconnection.close()
+            except:
+                return pageutils.generate_page ("Database Error",
+                                                "<div class=\"error\">Can't get event data.</div>\n")
+            # Build the page.
+            pagetext = ""
+            start_date = result[sqlutils.getfieldindex("start_date", description)]
+            end_date = result[sqlutils.getfieldindex("end_date", description)]
+            pagetext += "<h3>" + pageutils.get_month (start_date) + " " + pageutils.get_day (start_date)
+            if (end_date <> None):
+                pagetext += " - " + pageutils.get_month (end_date) + " " + pageutils.get_day (end_date)
+                pagetext += " " + pageutils.get_year (end_date)
+            else:
+                pagetext += " " + pageutils.get_year (start_date)
+            pagetext += "<p>" + result[sqlutils.getfieldindex("description", description)]
+            pagetitle = result[sqlutils.getfieldindex("title", description)]
+
+            return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
 
-    def new (self):
+    def new (self, missing=False, title=None, description=None):
         # Create new event, available to logged in users.
 
         # Verify user is logged in.
@@ -94,14 +127,23 @@ class EventsPage:
         
         # Form to create new event.
         pagecontents = ""
+        if (missing):
+            pagecontents += "<div class=\"error\"><h2>Error</h2>Be sure to fill in both the "
+            pagecontents += "title and description fields.</div>\n"
         pagecontents += "<form action=\"/events/process\" method=\"post\">"
         pagecontents += "<b>Title</b>:"
         pagecontents += "<br>"
-        pagecontents += "<input type=\"text\" name=\"title\">"
+        pagecontents += "<input type=\"text\" "
+        if (title <> None):
+            pagecontents += "value=\"" + title + "\" "
+        pagecontenst += "name=\"title\">"
         pagecontents += "<br><br>\n"
         pagecontents += "<b>Description</b>:"
         pagecontents += "<br>"
-        pagecontents += "<textarea cols=80 rows=10 name=\"description\"></textarea>\n"
+        pagecontents += "<textarea cols=80 rows=10 name=\"description\">"
+        if (description <> None):
+            pagecontents += description
+        pagecontents += "</textarea>\n"
         pagecontents += "<br><br>"
         pagecontents += "<b>Start Date</b>:"
         pagecontents += "<br>"
@@ -111,15 +153,35 @@ class EventsPage:
                       ["10", "October"], ["11", "November"], ["12", "December"]]:
             pagecontents += "<option value=\"" + month[0] + "\">" + month[1] + "</option>\n"
         pagecontents += "</select>\n"
-        pagecontents += "<select name=\"start_month\">\n"
+        pagecontents += "<select name=\"start_day\">\n"
         for day in ["01", "02", "03", "04", "05", "06", "07", "08", "09",
                     "10", "11", "12", "13", "14", "15", "16", "17", "18",
                     "19", "20", "21", "22", "23", "24", "25", "26", "27",
                     "28", "29", "30", "31"]:
             pagecontents += "<option value=\"" + day + "\">" + day + "</option>\n"
         pagecontents += "</select>\n"
-        pagecontents += "<select name=\"start_month\">\n"
+        pagecontents += "<select name=\"start_year\">\n"
         for year in ["2009", "2010", "2011", "2012"]:
+            pagecontents += "<option value=\"" + year + "\">" + year + "</option>\n"
+        pagecontents += "</select>\n"
+        pagecontents += "<br><br>\n"
+        pagecontents += "<b>End Date</b>: (<i>Leave blank for one-day events</i>)"
+        pagecontents += "<br>"
+        pagecontents += "<select name=\"end_month\">\n"
+        for month in [["", ""], ["01", "January"], ["02", "February"], ["03", "March"], ["04", "April"],
+                      ["05", "May"], ["06", "June"], ["07", "July"], ["08", "August"], ["09", "September"],
+                      ["10", "October"], ["11", "November"], ["12", "December"]]:
+            pagecontents += "<option value=\"" + month[0] + "\">" + month[1] + "</option>\n"
+        pagecontents += "</select>\n"
+        pagecontents += "<select name=\"end_day\">\n"
+        for day in ["", "01", "02", "03", "04", "05", "06", "07", "08", "09",
+                    "10", "11", "12", "13", "14", "15", "16", "17", "18",
+                    "19", "20", "21", "22", "23", "24", "25", "26", "27",
+                    "28", "29", "30", "31"]:
+            pagecontents += "<option value=\"" + day + "\">" + day + "</option>\n"
+        pagecontents += "</select>\n"
+        pagecontents += "<select name=\"end_year\">\n"
+        for year in ["", "2009", "2010", "2011", "2012"]:
             pagecontents += "<option value=\"" + year + "\">" + year + "</option>\n"
         pagecontents += "</select>\n"
         pagecontents += "<br><br>\n"
@@ -128,3 +190,50 @@ class EventsPage:
         return pageutils.generate_page ("Create New Event", pagecontents)
     new.exposed = True
 
+    def process (self, title=None, description=None, start_month=None, start_day=None, start_year=None,
+                 end_month=None, end_day=None, end_year=None):
+        # Verify user is logged in.
+        if (not pageutils.is_logged_in_p()):
+            raise cherrypy.HTTPRedirect ("/login")
+
+        # Make sure the title and description are present.
+        if (title == None or description == None):
+            return self.index (missing=True, title=title, description=description)
+
+        # Prepare start/end date strings.
+        start_date = start_year + "-" + start_month + "-" + start_day
+        end_date = None
+        if (end_year <> "" and end_month <> "" and end_day <> ""):
+            end_date = end_year + "-" + end_month + "-" + end_day
+
+        # Get the user_id.
+        user_id = str(pageutils.get_user_id())
+
+        # Insert the event into the database.
+        try:
+            # Connect to the database and insert the values.
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+
+            # Category value currently unused; default to 0.
+
+            if (end_date <> None):
+                dbcursor.execute ("INSERT INTO events (category, author_id, creation_date, title, " +
+                                  "description, start_date, end_date, display) " +
+                                  "VALUES (%s, %s, current_timestamp, %s, %s, %s, %s, %s)",
+                                  ["0", user_id, title, description, start_date, end_date, "1"])
+            else:
+                dbcursor.execute ("INSERT INTO events (category, author_id, creation_date, title, " +
+                                  "description, start_date, display) " +
+                                  "VALUES (%s, %s, current_timestamp, %s, %s, %s, %s)",
+                                  ["0", user_id, title, description, start_date, "1"])
+            dbconnection.commit()
+
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            return pageutils.generate_page ("Database Error",
+                                            "<div class=\"error\">Unable to add event.</div>\n")
+        raise cherrypy.HTTPRedirect ("/events/")
+    process.exposed = True
