@@ -49,7 +49,7 @@ class EventsPage:
                 # Try to connect to the database.
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
-                dbcursor.execute ("SELECT * FROM events WHERE ORDER BY start_date")
+                dbcursor.execute ("SELECT * FROM events ORDER BY start_date")
                 
                 # Get the cursor description and results from the query.
                 description = dbcursor.description
@@ -60,7 +60,7 @@ class EventsPage:
                 dbconnection.close()
             except:
                 return pageutils.generate_page ("Database Error",
-                                                "<div class=\"error\">Can't get discussion data.</div>\n")
+                                                "<div class=\"error\">Can't get event data.</div>\n")
             # Build the page.
             pagetext = "<ul>\n"
             for result in results:
