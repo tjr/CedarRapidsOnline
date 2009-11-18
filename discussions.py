@@ -182,7 +182,7 @@ class DiscussionsPage:
             return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
 
-    def comment (self, discussion_id=None):
+    def reply (self, discussion_id=None):
         # Verify user is logged in.
         if (not pageutils.is_logged_in_p()):
             raise cherrypy.HTTPRedirect ("/login")
@@ -193,7 +193,7 @@ class DiscussionsPage:
                                             "<div class=\"error\"><p>Unable to add comment.</p></div>")
 
         pagetext = ""
-        pagetitle = "Add a Comment"
+        pagetitle = "Add a Reply"
 
         pagetext += "<form action=\"/discussions/process\" method=\"post\">"
         pagetext += "<textarea cols=80 rows=10 name=\"body\"></textarea>\n"
