@@ -62,7 +62,12 @@ class EventsPage:
                 return pageutils.generate_page ("Database Error",
                                                 "<div class=\"error\">Can't get event data.</div>\n")
             # Build the page.
-            pagetext = "<ul>\n"
+            pagetext = ""
+            if (pageutils.is_logged_in_p()):
+                pagetext += "<a href=\"/events/new\">Add New Event</a>\n"
+            else:
+                pagetext += "<a href=\"/login\">Log In</a> to add a new event</a>\n"
+            pagetext += "<ul>\n"
             most_recent_month = None
             for result in results:
                 start_date = result[sqlutils.getfieldindex("start_date", description)]
@@ -109,9 +114,10 @@ class EventsPage:
             pagetext += "<h3>" + pageutils.get_month (start_date) + " " + str(pageutils.get_day (start_date))
             if (end_date <> None):
                 pagetext += " - " + pageutils.get_month (end_date) + " " + str(pageutils.get_day (end_date))
-                pagetext += " " + pageutils.get_year (end_date)
+                pagetext += ", " + pageutils.get_year (end_date)
             else:
-                pagetext += " " + pageutils.get_year (start_date)
+                pagetext += ", " + pageutils.get_year (start_date)
+            pagetext += "</h3>\n"
             pagetext += "<p>" + result[sqlutils.getfieldindex("description", description)]
             pagetitle = result[sqlutils.getfieldindex("title", description)]
 
