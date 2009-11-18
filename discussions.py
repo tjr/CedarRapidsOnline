@@ -72,6 +72,7 @@ class DiscussionsPage:
                 return pageutils.generate_page ("Database Error",
                                                 "<div class=\"error\">Can't get discussion data.</div>\n")
 
+            # Build the page.
             pagetext = "<a href=\"/discussions/new\">Start New Discussion</a>\n"
             pagetext += "<ul>\n"
             for result in results:
@@ -88,8 +89,97 @@ class DiscussionsPage:
                 pagetext += "</li>\n"
             pagetext += "</ul>\n"
             return pageutils.generate_page ("Discussions", pagetext)
+        
+        # Display a specific discussion.
         else:
-            pass
+            # Make sure we have a potentially-valid discussion id.
+            try:
+                discussion_id = str(int(discussion_id))
+            except:
+                return pageutils.generate_page ("Invalid Discussion",
+                                                "<div class=\"error\">Can't present the requested discussion.</div>\n")
+            
+            description = None
+            results = None
+            reply_results = []
+            author_description = None
+            author_results = []
+
+            # Get discussion listing from database
+            try:
+                # Try to connect to the database.
+                dbconnection = pgdb.connect (database_connect_fields)
+                dbcursor = dbconnection.cursor()
+                dbcursor.execute ("SELECT * FROM discussions WHERE discussion_id=%s", [discussion_id])
+                description = dbcursor.description
+                results = dbcursor.fetchone()
+
+                # Get the user (author) data for the main discussion.
+                dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
+                                  [str(results[sqlutils.getfieldindex("author_id", description)])])
+                author_description = dbcursor.description
+                author_results.append (dbcursor.fetchone())
+
+                # Get any comments/replies for this discussion thread.
+                dbcursor.execute ("SELECT * FROM discussions WHERE refers_to=%s", [discussion_id])
+                reply_results = dbcursor.fetchall()
+                
+
+                # Get and store the user (author) data.
+                for result in reply_results:
+                    dbcursor.execute ("SELECT * FROM users WHERE user_id=%s",
+                                      [str(result[sqlutils.getfieldindex("author_id", description)])])
+                    author_results.append (dbcursor.fetchone())
+
+                # Close the database cursor and connection.
+                dbcursor.close()
+                dbconnection.close()
+            except:
+                return pageutils.generate_page ("Database Error",
+                                                "<div class=\"error\">Can't get discussion data.</div>\n")
+            
+            # Build page.
+            pagetitle = results[sqlutils.getfieldindex("subject", description)]
+            pagetext = "<p>" + results[sqlutils.getfieldindex("body", description)] + "</p>\n"
+            for author in author_results:
+                if author == None:
+                    continue
+                # Find the author info to display.
+                if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
+                    pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
+                    pagetext += (" on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] +
+                                 "</i></p>\n")
+            pagetext += "<hr width=\"50%\">\n"
+            pagetext += "<h3>Replies</h3>\n"
+            # Do we have any replies to show?
+            if (replies_results <> None):
+                for result in replies_results:
+                    pagetext += "<p>"
+                    pagetext += result[sqlutils.getfieldindex ("body", description)]
+                    for author in author_results:
+                        if author == None:
+                            continue
+                        # Find the author info to display.
+                        if author[0] == result[sqlutils.getfieldindex ("author_id", description)]:
+                            pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", description)]
+                            pagetext += (" on " +
+                                         result[sqlutils.getfieldindex ("creation_date", description)] +
+                                         "</i></p>\n")
+                    # If the user is admin, post link to delete the reply.
+                    if (pageutils.is_admin_p()):
+                        pagetext += ("<p>[<a href=\"/admin/discussions/delete/" +
+                                     str(result[sqlutils.getfieldindex ("discussion_id", description)]) +
+                                     "\">Delete Reply</a>]</p>\n")
+                    pagetext += "</p>"
+                    pagetext += "<hr width=50%>\n"
+            # If user is logged in, post link to add a reply.
+            if (pageutils.is_logged_in_p()):
+                pagetext += "<p><a href=\"/discussions/reply/" + discussion_id + "\">Add a reply</a></p>\n"
+            else:
+                pagetext += "<p><a href=\"/login\">Log in</a> to add a reply</a></p>\n"
+            
+            # Generate page
+            return page_utils.generate_page (pagetitle, pagetext)
     index.exposed = True
 
     def comment (self, discussion_id=None):
