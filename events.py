@@ -71,7 +71,7 @@ class EventsPage:
                     most_recent_month = start_date
                     pagetext += "<h3>" + most_recent_month + "</h3>\n"
                 pagetext += ("<li>" + "<a href=\"/events/" +
-                             result[sqlutils.getfieldindex("event_id", description)] + "\">" +
+                             str(result[sqlutils.getfieldindex("event_id", description)]) + "\">" +
                              result[sqlutils.getfieldindex("title", description)] + "</a> (" +
                              str(pageutils.get_month (start_date)) + " " + str(pageutils.get_day (start_date)))
                 if (result[sqlutils.getfieldindex("end_date")] <> None):
