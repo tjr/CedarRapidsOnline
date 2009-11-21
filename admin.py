@@ -301,9 +301,10 @@ class AdminDiscussionsPage:
         # Verify user is logged-in admin
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
-        
+
         pagetext = "<p><a href=\"/admin/discussions/processdelete/" + str(discussion_id) + "\">Confirm discussion/reply deletion</a></p>\n"
         return pageutils.generate_page ("Confirm Deletion", pagetext)
+    
     delete.exposed = True
 
     def processdelete (self, discussion_id=None):
