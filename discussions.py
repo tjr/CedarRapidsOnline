@@ -154,6 +154,10 @@ class DiscussionsPage:
                     pagetext += (" on " + results[sqlutils.getfieldindex ("creation_date", description)] +
                                  "</i></p>\n")
                     break
+            if (pageutils.is_admin_p()):
+                pagetext += ("<p>[<a href=\"/admin/discussions/delete/" +
+                             str(results[sqlutils.getfieldindex("discussion_id", description)]) +
+                             "\">Delete Discussion</a>]</p>")
             pagetext += "<hr width=\"50%\">\n"
             pagetext += "<h3>Replies</h3>\n"
             # Do we have any replies to show?
@@ -171,12 +175,12 @@ class DiscussionsPage:
                                          result[sqlutils.getfieldindex ("creation_date", description)] +
                                          "</i></p>\n")
                             break
+                    pagetext += "</p>\n"
                     # If the user is admin, post link to delete the reply.
                     if (pageutils.is_admin_p()):
                         pagetext += ("<p>[<a href=\"/admin/discussions/delete/" +
                                      str(result[sqlutils.getfieldindex ("discussion_id", description)]) +
                                      "\">Delete Reply</a>]</p>\n")
-                    pagetext += "</p>"
                     pagetext += "<hr width=50%>\n"
             # If user is logged in, post link to add a reply.
             if (pageutils.is_logged_in_p()):

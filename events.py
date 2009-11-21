@@ -121,6 +121,11 @@ class EventsPage:
             pagetext += "<p>" + result[sqlutils.getfieldindex("description", description)]
             pagetitle = result[sqlutils.getfieldindex("title", description)]
 
+            if (pageutils.is_admin_p()):
+                pagetext += ("<p>[<a href=\"/admin/events/delete/" +
+                             str(result[sqlutils.getfieldindex("event_id", description)]) +
+                             "\">Delete Event</a>]</p>")
+
             return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
 

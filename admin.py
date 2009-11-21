@@ -144,10 +144,12 @@ class AdminArticlesPage:
     new.exposed = True
     
     def processedit (self, title=None, slug=None, display=None, body=None, article_id=None):
-        return self.processnew (title=title, slug=slug, display=display, body=body, article_id=article_id, edit=True)
+        return self.processnew (title=title, slug=slug, display=display,
+                                body=body, article_id=article_id, edit=True)
     processedit.exposed = True
 
-    def processnew (self, title=None, slug=None, display=None, body=None, article_id=None, edit=True):
+    def processnew (self, title=None, slug=None, display=None, body=None, article_id=None,
+                    edit=True):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
@@ -172,7 +174,8 @@ class AdminArticlesPage:
                 dbcursor = dbconnection.cursor()
                 if (edit):
                     if (article_id == None):
-                        return pageutils.generate_page ("No Article Id Specified", "No Article Id Specified")
+                        return pageutils.generate_page ("No Article Id Specified",
+                                                        "No Article Id Specified")
                     dbcursor.execute ("UPDATE articles SET title=%s, slug=%s, body=%s, display=%d WHERE article_id=%d",
                                       [title, slug, body, int(display), int(article_id)])
                 else:
@@ -291,13 +294,49 @@ class AdminDiscussionsPage:
     def index (self):
         # No reason to present listing of discussions, as this is
         # available from the main public view.
-        return "ADMIN: Select admin EDIT from a particular discussion."
+        return "ADMIN: Select admin options from a particular discussion."
     index.exposed = True
 
-    def edit (self, discussion_id=None):
-        # Edit form for given discussion.
-        return "ADMIN: Edit form for given discussion."
-    edit.exposed = True
+    def delete (self, discussion_id=None):
+        # Verify user is logged-in admin
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+        
+        pagetext = "<p><a href=\"/admin/discussions/processdelete/" + str(discussion_id) + "\">Confirm discussion/reply deletion</a></p>\n"
+        return pageutils.generate_page ("Confirm Deletion", pagetext)
+    delete.exposed = True
+
+    def processdelete (self, discussion_id=None):
+        # Verify user is logged-in admin.
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+
+        # Verify we have an discussion_id
+        if (discussion_id == None):
+            return pageutils.generate_page ("No Discussion Id Specified", "Nothing to delete!")
+
+        try:
+            # Connect to the database and delete the given discussion.
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            dbcursor.execute ("DELETE FROM discussions WHERE discussion_id=%s",
+                              [str(discussion_id)])
+            dbconnection.commit()
+
+            # Also delete replies, if any.
+            dbcursor.execute ("DELETE FROM discussions WHERE refers_to=%s",
+                              [str(discussion_id)])
+            dbconnection.commit()
+
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            return pageutils.generate_page ("Database Error", "Deletion failed!")
+
+        return pageutils.generate_page ("Successful Deletion",
+                                        "The specified discussion/reply has been deleted.")
+    processdelete.exposed = True
 
 class AdminEventsPage:
     def index (self):
@@ -307,17 +346,44 @@ class AdminEventsPage:
 
         # No reason to present listing of events, as this is available
         # from the main public view.
-        return "ADMIN: Select admin EDIT from a particular event."
+        return "ADMIN: Select admin options from a particular event."
     index.exposed = True
 
-    def edit (self, event_id=None):
+def delete (self, event_id=None):
+        # Verify user is logged-in admin
+        if (not pageutils.is_admin_p()):
+            raise cherrypy.HTTPRedirect ("/")
+        
+        pagetext = "<p><a href=\"/admin/events/processdelete/" + str(event_id) + "\">Confirm event deletion</a></p>\n"
+        return pageutils.generate_page ("Confirm Deletion", pagetext)
+    delete.exposed = True
+
+    def processdelete (self, event_id=None):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
 
-        # Edit form for given event.
-        return "ADMIN: Edit form for given event."
-    edit.exposed = True
+        # Verify we have an event_id
+        if (discussion_id == None):
+            return pageutils.generate_page ("No Event Id Specified", "Nothing to delete!")
+
+        try:
+            # Connect to the database and delete the given discussion.
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            dbcursor.execute ("DELETE FROM events WHERE event_id=%s",
+                              [str(event_id)])
+            dbconnection.commit()
+
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            return pageutils.generate_page ("Database Error", "Deletion failed!")
+
+        return pageutils.generate_page ("Successful Deletion",
+                                        "The specified event has been deleted.")
+    processdelete.exposed = True
 
 class AdminPage:
     def __init__(self):
@@ -335,8 +401,10 @@ class AdminPage:
 
         # Present menu of administrative activities
         return """
-             <a href=\"/admin/users/\">Users Admin</a><p>
-             <a href=\"/admin/articles/\">Articles Admin</a><p>
-             <a href=\"/admin/discussions/\">Discussions Admin</a><p>
-             <a href=\"/admin/events/\">Events Admin</a>"""
+             <ul>
+             <li><a href=\"/admin/users/\">Users Admin</a></li>
+             <li><a href=\"/admin/articles/\">Articles Admin</a></li>
+             <li><a href=\"/admin/discussions/\">Discussions Admin</a></li>
+             <li><a href=\"/admin/events/\">Events Admin</a></li>
+             </ul>"""
     index.exposed = True
