@@ -65,7 +65,7 @@ class ProfilePage:
             url = "NONE"
         pagetitle = results[sqlutils.getfieldindex("name", description)]
         pagetext = ""
-        pagetext += "<ul>\n">
+        pagetext += "<ul>\n"
         pagetext += ("<li>Email address: " + results[sqlutils.getfieldindex("email", description)] +
                      "[<a href=\"/profile/email\">Change my email address</a>]</li>\n")
         pagetext += ("<li>URL: " + url + "[<a href=\"/profile/url\">Change my URL</a>]</li>\n")
