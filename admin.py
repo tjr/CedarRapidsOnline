@@ -310,7 +310,7 @@ class AdminDiscussionsPage:
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
-
+        
         # Verify we have an discussion_id
         if (discussion_id == None):
             return pageutils.generate_page ("No Discussion Id Specified", "Nothing to delete!")
@@ -322,22 +322,22 @@ class AdminDiscussionsPage:
             dbcursor.execute ("DELETE FROM discussions WHERE discussion_id=%s",
                               [str(discussion_id)])
             dbconnection.commit()
-
+            
             # Also delete replies, if any.
             dbcursor.execute ("DELETE FROM discussions WHERE refers_to=%s",
                               [str(discussion_id)])
             dbconnection.commit()
-
+            
             # Close the database cursor and connection.
             dbcursor.close()
             dbconnection.close()
         except:
             return pageutils.generate_page ("Database Error", "Deletion failed!")
-
+        
         return pageutils.generate_page ("Successful Deletion",
                                         "The specified discussion/reply has been deleted.")
     processdelete.exposed = True
-
+    
 class AdminEventsPage:
     def index (self):
         # Verify user is logged-in admin.
