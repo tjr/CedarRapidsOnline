@@ -27,7 +27,7 @@ import sqlutils
 import articles
 import discussions
 import events
-import users
+import profile
 import admin
 import register
 import login
@@ -39,7 +39,7 @@ class HomePage:
            <a href="/articles/">Articles</a><p>
            <a href="/discussions/">Discussions</a><p>
            <a href="/events/">Events</a><p>
-           <a href="/users/">Users</a><p>
+           <a href="/profile">My Profile</a><p>
            <a href=\"/admin\">Admin</a><p>
            """)
     index.exposed = True
@@ -48,11 +48,12 @@ root = HomePage()
 root.articles = articles.ArticlesPage()
 root.discussions = discussions.DiscussionsPage()
 root.events = events.EventsPage()
-root.users = users.UsersPage()
+root.profile = profile.ProfilePage()
 root.register = register.RegisterPage()
 root.login = login.LoginPage()
 root.logout = logout.LogoutPage()
 root.admin = admin.AdminPage()
+
 cherrypy.tree.mount (root, config="site.conf")
 
 if __name__ == "__main__":
