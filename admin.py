@@ -350,11 +350,11 @@ class AdminEventsPage:
         return "ADMIN: Select admin options from a particular event."
     index.exposed = True
 
-def delete (self, event_id=None):
+    def delete (self, event_id=None):
         # Verify user is logged-in admin
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
-        
+
         pagetext = "<p><a href=\"/admin/events/processdelete/" + str(event_id) + "\">Confirm event deletion</a></p>\n"
         return pageutils.generate_page ("Confirm Deletion", pagetext)
     delete.exposed = True
