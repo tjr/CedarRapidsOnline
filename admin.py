@@ -365,7 +365,7 @@ class AdminEventsPage:
             raise cherrypy.HTTPRedirect ("/")
 
         # Verify we have an event_id
-        if (discussion_id == None):
+        if (event_id == None):
             return pageutils.generate_page ("No Event Id Specified", "Nothing to delete!")
 
         try:
