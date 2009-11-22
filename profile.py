@@ -66,10 +66,10 @@ class ProfilePage:
         pagetitle = results[sqlutils.getfieldindex("name", description)]
         pagetext = ""
         pagetext += "<ul>\n"
-        pagetext += ("<li>Email address: " + results[sqlutils.getfieldindex("email", description)] +
-                     "[<a href=\"/profile/email\">Change my email address</a>]</li>\n")
-        pagetext += ("<li>URL: " + url + "[<a href=\"/profile/url\">Change my URL</a>]</li>\n")
-        pagetext += "<li>[<a href=\"/profile/password\">Change my password</a>\</li>\n"
+        pagetext += ("<li><br>Email address</b>: " + results[sqlutils.getfieldindex("email", description)] +
+                     "<br>[<a href=\"/profile/email\">Change my email address</a>]</li>\n")
+        pagetext += ("<li><b>URL</b>: " + url + "<br>[<a href=\"/profile/url\">Change my URL</a>]</li>\n")
+        pagetext += "<li>[<a href=\"/profile/password\">Change my password</a>]</li>\n"
         pagetext += "</ul>\n"
 
         return pageutils.generate_page (pagetitle, pagetext)
