@@ -15,8 +15,30 @@ This software was written by Trevis Rothwell (tjr@gnu.org) and is released
 and reusable under the GNU GPL v3 license (or, at your option, any later
 version of the GNU GPL).
 
-As of this checkin (14 November 2009) this software is incomplete and unusable
-as a full working system.
+As of this checkin (21 November 2009) this software is a working system, with
+some minor issues yet to be addressed / implemented.
+
+SETUP
+ * Create a PostgreSQL database using the included SQL definitions.
+ * Modify the site.conf file as needed
+ * Modify the pageutils.py file as needed (specifically, insert correct
+   database information)
+ * Modify index.py to include the IP address of your system
+
+ * Run: python index.py
+ * Load the site in your browser
+ * Create a new user as the admin user
+ * Using PostgreSQL psql, set the new user's level to 2
+ * Create a "welcome" page that serves as the main index content
+ * Create a "map" page that serves as the article index
+
+TODO
+ * Create admin pages for editing users
+ * Make first user default to being admin user
+ * Fix all "FIXME" code blocks, including adding better error reporting.
+ * Create a basic install script that handles creation of "welcome" and
+   "map" pages, along with whatever else can/should be install-scripted.
+ * Some sections of code could be cleaned up, refactored.
 
 For background information and design plans, see:
 

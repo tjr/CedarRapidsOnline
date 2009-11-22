@@ -162,7 +162,7 @@ class RegisterPage:
             else:
                 url = "http://" + url
 
-            # FIXME: ensure that email address hasn't already been used in database.
+            # Ensure that email address hasn't already been used in database.
             try:
                 dbconnection = pgdb.connect (database_connect_fields)
                 dbcursor = dbconnection.cursor()
