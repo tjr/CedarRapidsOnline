@@ -84,7 +84,7 @@ class ProfilePage:
         pagetext = ""
         if (error <> None):
             pagetext += "<div class=\"error\">Name cannot be blank.</div>\n"
-        pagetext += "<form action=\"/profile/process\" method=\"post\">"
+        pagetext += "<form action=\"/profile/processname\" method=\"post\">"
         pagetext += "<b>Name</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"name\">"
@@ -102,9 +102,11 @@ class ProfilePage:
         pagetext = ""
         if (error == "invalid"):
             pagetext += "<div class=\"error\">Please enter a valid email address, in the form: user@bar.baz</div>"
+        elif (error == "used"):
+            pagetext += "<div class=\"error\">That email address is already in use. Please try again.</div>"
         elif (error <> None):
             pagetext += "<div class=\"error\">Email address cannot be blank.</div>\n"
-        pagetext += "<form action=\"/profile/process\" method=\"post\">"
+        pagetext += "<form action=\"/profile/processemail\" method=\"post\">"
         pagetext += "<b>Email Address</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"email\">"
@@ -120,14 +122,14 @@ class ProfilePage:
         if (not pageutils.is_logged_in_p()):
             raise cherrypy.HTTPRedirect ("/login/e")
         pagetext = ""
-        pagetext += "<form action=\"/profile/process\" method=\"post\">"
+        pagetext += "<form action=\"/profile/processurl\" method=\"post\">"
         pagetext += "<b>URL</b> (leave blank to clear existing URL):"
         pagetext += "<br>"
         pagetext += "<input type=\"text\" name=\"url\">"
         pagetext += "<br><br>"
         pagetext += "<input type=\"submit\" value=\"Change Your URL\">"
         pagetext += "</form>"
-        return pageutils.generate_page ("Change Your  URL", pagetext)
+        return pageutils.generate_page ("Change Your URL", pagetext)
     url.exposed = True
 
     def password (self, error=None):
@@ -140,7 +142,7 @@ class ProfilePage:
             pagetext += "<div class=\"error\">Password fields must match.</div>\n"
         elif (error <> None):
             pagetext += "<div class=\"error\">Neither password field can be blank.</div>\n"
-        pagetext += "<form action=\"/profile/process\" method=\"post\">"
+        pagetext += "<form action=\"/profile/processpassword\" method=\"post\">"
         pagetext += "<b>Password</b>:"
         pagetext += "<br>"
         pagetext += "<input type=\"password\" name=\"password\">"
@@ -151,7 +153,7 @@ class ProfilePage:
         pagetext += "<br><br>"
         pagetext += "<input type=\"submit\" value=\"Change Your Email Address\">"
         pagetext += "</form>"
-        return pageutils.generate_page ("Change Your Email Address", pagetext)
+        return pageutils.generate_page ("Change Your Password", pagetext)
     password.exposed = True
 
     def processname (self, name=None):
@@ -174,6 +176,28 @@ class ProfilePage:
         # Verify email address is plausibly valid.
          if (re.match (pageutils.emailregex, email) == None):
              raise cherrypy.HTTPRedirect ("/profile/email/invalid")
+
+         # Make sure new email address isn't already on record, i.e., another user.
+         existingemail = False
+         try:
+            dbconnection = pgdb.connect (database_connect_fields)
+            dbcursor = dbconnection.cursor()
+            dbcursor.execute ("SELECT * FROM users WHERE email=%s", email)
+            
+            # Get the cursor description and results from the query.
+            description = dbcursor.description
+            results = dbcursor.fetchone()
+            
+            existingemail = (results <> None)
+
+            # Close the database cursor and connection.
+            dbcursor.close()
+            dbconnection.close()
+        except:
+            pass
+
+        if (existingemail):
+            raise cherrypy.HTTPRedirect ("/profile/email/used")
 
          return self.process (email=email)
     processemail.exposed = True
