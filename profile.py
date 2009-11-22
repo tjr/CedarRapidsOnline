@@ -51,7 +51,7 @@ class ProfilePage:
             
             # Get the cursor description and results from the query.
             description = dbcursor.description
-            results = dbcursor.fetchall()
+            results = dbcursor.fetchone()
 
             # Close the database cursor and connection.
             dbcursor.close()
