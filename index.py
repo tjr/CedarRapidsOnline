@@ -34,9 +34,15 @@ import login
 import logout
 
 class HomePage:
+    articles = articles.ArticlesPage()
+
     def index (self):
-        return articles.ArticlesPage().index (article_slug="welcome")
+        return self.articles.index (article_slug="welcome")
     index.exposed = True
+
+    def default (self, parameter=None):
+        if (parameter == "404"):
+            return pageutils.generate_page ("Page Not Found", "Page Not Found")
 
 root = HomePage()
 root.articles = articles.ArticlesPage()

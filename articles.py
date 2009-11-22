@@ -72,11 +72,16 @@ class ArticlesPage:
             pass
 
         if (results == None):
+            # The "welcome" article is the main front page.  We need to have this page.
             if (article_slug == "welcome"):
                 return pageutils.generate_page ("Welcome",
                                                 "You will need to create an article with the slug: welcome")
+            # We also need a "map" page.
+            elif (article_slug == "map"):
+                return pageutils.generate_page ("Map",
+                                                "You will need to create an article with the slug: map")
             else:
-                raise cherrypy.HTTPRedirect ("/")
+                raise cherrypy.HTTPRedirect ("/404")
 
         # Obtain the article title from the database results.
         pagetitle = ""
