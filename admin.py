@@ -149,7 +149,7 @@ class AdminArticlesPage:
     processedit.exposed = True
 
     def processnew (self, title=None, slug=None, display=None, body=None, article_id=None,
-                    edit=True):
+                    edit=False):
         # Verify user is logged-in admin.
         if (not pageutils.is_admin_p()):
             raise cherrypy.HTTPRedirect ("/")
