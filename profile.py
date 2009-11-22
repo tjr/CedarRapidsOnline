@@ -24,6 +24,7 @@ import string
 import sqlutils
 import pageutils
 import re
+import crypt
 
 database_connect_fields = sqlutils.database_connect_fields
 
@@ -84,7 +85,7 @@ class ProfilePage:
             raise cherrypy.HTTPRedirect ("/login/e")
         pagetext = ""
         if (error <> None):
-            pagetext += "<div class=\"error\">Name cannot be blank.</div>\n"
+            pagetext += "<div class=\"error\">Name cannot be blank.</div><br>\n"
         pagetext += "<form action=\"/profile/processname\" method=\"post\">"
         pagetext += "<b>Name</b>:"
         pagetext += "<br>"
@@ -102,9 +103,9 @@ class ProfilePage:
             raise cherrypy.HTTPRedirect ("/login/e")
         pagetext = ""
         if (error == "invalid"):
-            pagetext += "<div class=\"error\">Please enter a valid email address, in the form: user@bar.baz</div>"
+            pagetext += "<div class=\"error\">Please enter a valid email address, in the form: user@bar.baz</div><br>"
         elif (error == "used"):
-            pagetext += "<div class=\"error\">That email address is already in use. Please try again.</div>"
+            pagetext += "<div class=\"error\">That email address is already in use. Please try again.</div><br>"
         elif (error <> None):
             pagetext += "<div class=\"error\">Email address cannot be blank.</div>\n"
         pagetext += "<form action=\"/profile/processemail\" method=\"post\">"
@@ -140,9 +141,9 @@ class ProfilePage:
             raise cherrypy.HTTPRedirect ("/login/e")
         pagetext = ""
         if (error == "verify"):
-            pagetext += "<div class=\"error\">Password fields must match.</div>\n"
+            pagetext += "<div class=\"error\">Password fields must match.</div><br>\n"
         elif (error <> None):
-            pagetext += "<div class=\"error\">Neither password field can be blank.</div>\n"
+            pagetext += "<div class=\"error\">Neither password field can be blank.</div><br>\n"
         pagetext += "<form action=\"/profile/processpassword\" method=\"post\">"
         pagetext += "<b>Password</b>:"
         pagetext += "<br>"
@@ -152,7 +153,7 @@ class ProfilePage:
         pagetext += "<br>"
         pagetext += "<input type=\"password\" name=\"passwordverify\">"
         pagetext += "<br><br>"
-        pagetext += "<input type=\"submit\" value=\"Change Your Email Address\">"
+        pagetext += "<input type=\"submit\" value=\"Change Your Password\">"
         pagetext += "</form>"
         return pageutils.generate_page ("Change Your Password", pagetext)
     password.exposed = True
@@ -217,6 +218,11 @@ class ProfilePage:
             url = True
         else:
             url = string.strip(url)
+            # Add http:// to the URL if needed.
+            if (url[0:7] =="http://" or url == ""):
+                pass
+            else:
+                url = "http://" + url
         return self.process (url=url)
     processurl.exposed = True
 
