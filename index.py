@@ -35,7 +35,7 @@ import logout
 
 class HomePage:
     def index (self):
-        return articles.ArticlesPage().index (slug="welcome")
+        return articles.ArticlesPage().index (article_slug="welcome")
     index.exposed = True
 
 root = HomePage()
