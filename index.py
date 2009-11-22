@@ -33,11 +33,6 @@ import register
 import login
 import logout
 
-class HomePage:
-    def index (self):
-        return articles.index (slug="welcome")
-    index.exposed = True
-
 root = HomePage()
 root.articles = articles.ArticlesPage()
 root.discussions = discussions.DiscussionsPage()
@@ -47,6 +42,11 @@ root.register = register.RegisterPage()
 root.login = login.LoginPage()
 root.logout = logout.LogoutPage()
 root.admin = admin.AdminPage()
+
+class HomePage:
+    def index (self):
+        return root.articles.index (slug="welcome")
+    index.exposed = True
 
 cherrypy.tree.mount (root, config="site.conf")
 
