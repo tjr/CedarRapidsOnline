@@ -240,7 +240,7 @@ class ProfilePage:
             # Connect to the database and insert the values.
             dbconnection = pgdb.connect (database_connect_fields)
             dbcursor = dbconnection.cursor()
-            dbcursor.execute (query)
+            dbcursor.execute (query[0], query[1])
             dbconnection.commit()
             
             # Close the database cursor and connection.
@@ -249,6 +249,6 @@ class ProfilePage:
 
         except:
             # FIXME: this is a public user page; provide more interesting feedback in this event.
-            return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query: " + query)
+            return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
         raise cherrypy.HTTPRedirect ("/profile")
     process.exposed = True
