@@ -124,12 +124,12 @@ class RegisterPage:
             originalpasswordverify = passwordverify
             originalurl = url
 
-            # Replace single quotes with two single quotes.
-            name = sqlutils.quote (str(name))
-            email = sqlutils.quote (str(email))
-            password = sqlutils.quote (str(password))
-            passwordverify = sqlutils.quote (str(passwordverify))
-            url = sqlutils.quote (str(url))
+            # Remove any leading/trailing spaces.
+            name = string.strip(name)
+            email = string.strip(email)
+            password = string.strip(password)
+            passwordverify = string.strip(passwordverify)
+            url = string.strip(url)
             level = "1" # default level for regular user.
 
             # Verify all required fields are filled in.
