@@ -168,14 +168,14 @@ class ProfilePage:
     def processemail (self, email=None):
          if (not pageutils.is_logged_in_p()):
             raise cherrypy.HTTPRedirect ("/login/e")
-        if (email == None):
-            raise cherrypy.HTTPRedirect ("/profile/name/e")
+         if (email == None):
+             raise cherrypy.HTTPRedirect ("/profile/name/e")
 
         # Verify email address is plausibly valid.
-        if (re.match (pageutils.emailregex, email) == None):
-            raise cherrypy.HTTPRedirect ("/profile/email/invalid")
+         if (re.match (pageutils.emailregex, email) == None):
+             raise cherrypy.HTTPRedirect ("/profile/email/invalid")
 
-        return self.process (email=email)
+         return self.process (email=email)
     processemail.exposed = True
 
     def processurl (self, url=None):
