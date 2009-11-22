@@ -193,11 +193,11 @@ class ProfilePage:
             # Close the database cursor and connection.
             dbcursor.close()
             dbconnection.close()
-        except:
-            pass
+         except:
+             pass
 
-        if (existingemail):
-            raise cherrypy.HTTPRedirect ("/profile/email/used")
+         if (existingemail):
+             raise cherrypy.HTTPRedirect ("/profile/email/used")
 
          return self.process (email=email)
     processemail.exposed = True
