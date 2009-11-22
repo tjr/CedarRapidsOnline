@@ -162,8 +162,8 @@ def generate_menu (logged_in=0):
 # Print the page footer, including closing out all HTML tags.
 def generate_footer ():
     r = "</div>\n"
-    r += "<hr><p class=\"footer\">Copyright &copy; 2009 Clear Perception Solutions LLC</p>\n"
-    r += "<p><a href=\"mailto:cedarrapids@clearperception.net\">cedarrapids@clearperception.net</a></p>\n"
+    r += "<hr><p class=\"footer\">Copyright &copy; 2009 Clear Perception Solutions LLC\n"
+    r += "<br><a href=\"mailto:cedarrapids@clearperception.net\" class=\"footer\">cedarrapids@clearperception.net</a></p>\n"
     r += "</div></body></html>\n"
     return r
 

@@ -72,3 +72,9 @@ a:link { text-decoration: underline; color: #009;}
 a:visited { text-decoration: underline; color: #009;}
 a:active { text-decoration: none; color: #009;}
 a:hover { text-decoration: none; color: #009;}
+
+a.footer:link { text-decoration: underline; color: #888;}
+a.footer:visited { text-decoration: underline; color: #888;}
+a.footer:active { text-decoration: none; color: #888;}
+a.footer:hover { text-decoration: none; color: #888;}
+
