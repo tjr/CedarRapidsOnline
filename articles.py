@@ -72,7 +72,11 @@ class ArticlesPage:
             pass
 
         if (results == None):
-            raise cherrypy.HTTPRedirect ("/")
+            if (article_slug == "welcome"):
+                return pageutils.generate_page ("Welcome",
+                                                "You will need to create an article with the slug: welcome")
+            else:
+                raise cherrypy.HTTPRedirect ("/")
 
         # Obtain the article title from the database results.
         pagetitle = ""
