@@ -71,5 +71,7 @@ class ProfilePage:
         pagetext += ("<li>URL: " + url + "[<a href=\"/profile/url\">Change my URL</a>]</li>\n")
         pagetext += "<li>[<a href=\"/profile/password\">Change my password</a>\</li>\n"
         pagetext += "</ul>\n"
+
+        return pageutils.generate_page (pagetitle, pagetext)
     index.exposed = True
 
