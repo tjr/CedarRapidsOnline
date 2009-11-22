@@ -249,6 +249,6 @@ class ProfilePage:
 
         except:
             # FIXME: this is a public user page; provide more interesting feedback in this event.
-            return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
+            return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query: " + query)
         raise cherrypy.HTTPRedirect ("/profile")
     process.exposed = True
