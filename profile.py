@@ -23,6 +23,7 @@ import pgdb
 import string
 import sqlutils
 import pageutils
+import re
 
 database_connect_fields = sqlutils.database_connect_fields
 
@@ -164,6 +165,7 @@ class ProfilePage:
         if (name == None):
             raise cherrypy.HTTPRedirect ("/profile/name/e")
         else:
+            name = string.strip (name)
             return self.process (name=name)
     processname.exposed = True
 
@@ -173,12 +175,16 @@ class ProfilePage:
          if (email == None):
              raise cherrypy.HTTPRedirect ("/profile/name/e")
 
+         # Remove leading/trailing spaces.
+         email = string.strip(email)
+
         # Verify email address is plausibly valid.
          if (re.match (pageutils.emailregex, email) == None):
              raise cherrypy.HTTPRedirect ("/profile/email/invalid")
 
          # Make sure new email address isn't already on record, i.e., another user.
          existingemail = False
+         existingvalue = ""
          try:
             dbconnection = pgdb.connect (database_connect_fields)
             dbcursor = dbconnection.cursor()
@@ -189,16 +195,18 @@ class ProfilePage:
             results = dbcursor.fetchone()
             
             existingemail = (results <> None)
+            existingvalue = results[sqlutils.getfieldindex ("email", description)]
 
             # Close the database cursor and connection.
             dbcursor.close()
             dbconnection.close()
          except:
              pass
-
-         if (existingemail):
+    
+         # It's okay if the user wants to set their email to their own current email.
+         if (existingemail and (existingvalue <> email)):
              raise cherrypy.HTTPRedirect ("/profile/email/used")
-
+         
          return self.process (email=email)
     processemail.exposed = True
 
@@ -207,7 +215,8 @@ class ProfilePage:
             raise cherrypy.HTTPRedirect ("/login/e")
         if (url == None):
             url = True
-        
+        else:
+            url = string.strip(url)
         return self.process (url=url)
     processurl.exposed = True
 
