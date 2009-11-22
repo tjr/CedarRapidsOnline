@@ -72,7 +72,7 @@ class ArticlesPage:
             pass
 
         if (results == None):
-            pass
+            raise cherrypy.HTTPRedirect ("/")
 
         # Obtain the article title from the database results.
         pagetitle = ""
@@ -89,33 +89,36 @@ class ArticlesPage:
             pagetext += "<p>Database Error.</p>"
 
         # Do we want to show comments on this page?
-        if (int(results[sqlutils.getfieldindex ("display", description)]) > 1):
-            pagetext += "<hr><h3>User Comments</h3>"
-            # Do we have any comments to show?
-            if (comments_results <> None):
-                for result in comments_results:
-                    pagetext += "<p>"
-                    pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
-                    for author in author_results:
-                        if author == None:
-                            continue
-                        # Find the author info to display.
-                        if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
-                            pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
-                            pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</i></p>\n"
-                            break
-                    # If the user is admin, post link to delete the comment.
-                    if (pageutils.is_admin_p()):
-                        pagetext += ("<p>[<a href=\"/admin/articles/delete/" +
-                                     str(result[sqlutils.getfieldindex ("article_id", comments_description)]) +
-                                     "\">Delete Comment</a>]</p>\n")
-                    pagetext += "</p>"
-                    pagetext += "<hr width=50%>\n"
-            # If user is logged in, post link to add a comment.
-            if (pageutils.is_logged_in_p()):
-                pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
-            else:
-                pagetext += "<p><a href=\"/login\">Log in</a> to add a comment</a></p>\n"
+        try:
+            if (int(results[sqlutils.getfieldindex ("display", description)]) > 1):
+                pagetext += "<hr><h3>User Comments</h3>"
+                # Do we have any comments to show?
+                if (comments_results <> None):
+                    for result in comments_results:
+                        pagetext += "<p>"
+                        pagetext += result[sqlutils.getfieldindex ("body", comments_description)]
+                        for author in author_results:
+                            if author == None:
+                                continue
+                            # Find the author info to display.
+                            if author[0] == result[sqlutils.getfieldindex ("author_id", comments_description)]:
+                                pagetext += "<p><i>posted by " + author[sqlutils.getfieldindex ("name", author_description)]
+                                pagetext += " on " + result[sqlutils.getfieldindex ("creation_date", comments_description)] + "</i></p>\n"
+                                break
+                        # If the user is admin, post link to delete the comment.
+                        if (pageutils.is_admin_p()):
+                            pagetext += ("<p>[<a href=\"/admin/articles/delete/" +
+                                         str(result[sqlutils.getfieldindex ("article_id", comments_description)]) +
+                                         "\">Delete Comment</a>]</p>\n")
+                        pagetext += "</p>"
+                        pagetext += "<hr width=50%>\n"
+                        # If user is logged in, post link to add a comment.
+                        if (pageutils.is_logged_in_p()):
+                            pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
+                        else:
+                            pagetext += "<p><a href=\"/login\">Log in</a> to add a comment</a></p>\n"
+        except:
+            pass
 
         # Build the whole page and return it.
         return pageutils.generate_page (pagetitle, pagetext)
