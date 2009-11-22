@@ -69,9 +69,13 @@ class EventsPage:
                 pagetext += "<a href=\"/login\">Log In</a> to add a new event</a>\n"
             pagetext += "<ul>\n"
             most_recent_month = None
+            most_recent_year = None
             for result in results:
                 start_date = result[sqlutils.getfieldindex("start_date", description)]
                 end_date = result[sqlutils.getfieldindex("end_date", description)]
+                if (most_recent_year <> pageutils.get_year (start_date)):
+                    most_recent_year = pageutils.get_year (start_date)
+                    pagetext += "</ul><h2>" + str(most_recent_year) + "</h2><ul>\n"
                 if (most_recent_month <> pageutils.get_month (start_date)):
                     most_recent_month = pageutils.get_month(start_date)
                     pagetext += "</ul><h3>" + most_recent_month + "</h3><ul>\n"
