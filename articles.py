@@ -145,6 +145,8 @@ class ArticlesPage:
         pagecontents += "<input type=\"submit\" value=\"Add Comment\">"
         pagecontents += "</form>"
 
+        pagecontents += pageutils.generate_disclaimer()
+
         return pageutils.generate_page ("Add a comment", pagecontents)
     comment.exposed = True
 

@@ -35,13 +35,7 @@ import logout
 
 class HomePage:
     def index (self):
-        return pageutils.generate_page("Welcome", """
-           <a href="/articles/">Articles</a><p>
-           <a href="/discussions/">Discussions</a><p>
-           <a href="/events/">Events</a><p>
-           <a href="/profile">My Profile</a><p>
-           <a href=\"/admin\">Admin</a><p>
-           """)
+        return articles.index (slug="welcome")
     index.exposed = True
 
 root = HomePage()

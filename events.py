@@ -198,6 +198,9 @@ class EventsPage:
         pagecontents += "<br><br>\n"
         pagecontents += "<input type=\"submit\" value=\"Create New Event\">"
         pagecontents += "</form>"
+
+        pagecontents += pageutils.generate_disclaimer()
+
         return pageutils.generate_page ("Create New Event", pagecontents)
     new.exposed = True
 

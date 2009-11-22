@@ -70,7 +70,7 @@ class ProfilePage:
         pagetext += "<ul>\n"
         pagetext += ("<li><b>Email address</b>: " + results[sqlutils.getfieldindex("email", description)] +
                      "<br>[<a href=\"/profile/email\">Change my email address</a>]</li>\n")
-        pagetext += ("<li><b>URL</b>: " + url + "<br>[<a href=\"/profile/url\">Change my URL</a>]</li>\n")
+        pagetext += ("<br><li><b>URL</b>: " + url + "<br>[<a href=\"/profile/url\">Change my URL</a>]</li>\n")
         pagetext += "<br><li>[<a href=\"/profile/password\">Change my password</a>]</li>\n"
         pagetext += "<br><li>[<a href=\"/profile/name\">Change my name</a>]</li>\n"
         pagetext += "</ul>\n"

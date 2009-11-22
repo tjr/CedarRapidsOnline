@@ -212,6 +212,8 @@ class DiscussionsPage:
         pagetext += "<input type=\"submit\" value=\"Add Comment\">"
         pagetext += "</form>"
         
+        pagetext += pageutils.generate_disclaimer()
+        
         return pageutils.generate_page (pagetitle, pagetext)
     reply.exposed = True
 
@@ -233,6 +235,8 @@ class DiscussionsPage:
         pagetext += "<br><br>"
         pagetext += "<input type=\"submit\" value=\"Start New Discussion\">"
         pagetext += "</form>"
+
+        pagetext += pageutils.generate_disclaimer()
         
         return pageutils.generate_page (pagetitle, pagetext)
     new.exposed = True

@@ -142,7 +142,6 @@ def generate_header (title=""):
     return r
 
 # Print the main menu for the site.
-# FIXME: currently filler material!
 def generate_menu (logged_in=0):
     r = "<p class=\"menu\">"
     r += "<a href=\"/\">Home</a> | "
@@ -155,6 +154,7 @@ def generate_menu (logged_in=0):
     elif (logged_in == 2):
         r += "<a href=\"/admin/\">Admin</a> | "
     if (logged_in > 0):
+        r += "<a href=\"/profile\">My Profile</a> | "
         r += "<a href=\"/logout\">Logout</a>"
     r += "<p>\n"
     return r
@@ -169,3 +169,8 @@ def generate_footer ():
 def generate_page (title = "", content = ""):
     return generate_header(title) + content + generate_footer()
 
+# Generate disclaimer for user-contributed content.
+def generate_disclaimer ():
+    return ("<p>Please keep your contributions on-topic and family-friendly. " +
+            "Any content you contribute to this site can be removed at the sole " +
+            "discretion of the site administrators. Thanks!</p>")
