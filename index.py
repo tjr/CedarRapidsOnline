@@ -43,6 +43,7 @@ class HomePage:
     def default (self, parameter=None):
         if (parameter == "404"):
             return pageutils.generate_page ("Page Not Found", "Page Not Found")
+    default.exposed = True
 
 root = HomePage()
 root.articles = articles.ArticlesPage()
