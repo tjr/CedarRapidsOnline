@@ -122,10 +122,10 @@ class ArticlesPage:
                         pagetext += "</p>"
                         pagetext += "<hr width=50%>\n"
                         # If user is logged in, post link to add a comment.
-                        if (pageutils.is_logged_in_p()):
-                            pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
-                        else:
-                            pagetext += "<p><a href=\"/login\">Log in</a> to add a comment</a></p>\n"
+                if (pageutils.is_logged_in_p()):
+                    pagetext += "<p><a href=\"/articles/comment/" + article_slug + "\">Add a comment</a></p>\n"
+                else:
+                    pagetext += "<p><a href=\"/login\">Log in</a> to add a comment</a></p>\n"
         except:
             pass
 
