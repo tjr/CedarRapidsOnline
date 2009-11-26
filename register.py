@@ -216,6 +216,5 @@ class RegisterPage:
 
     def thanks (self):
         return pageutils.generate_page ("Thanks for Registering!",
-                                        "<p>Thanks for registering! You can now <a href=\"/login\">login " +
-                                        "to your account</a>.</p>")
+                                        "<div class=\"notice\">Thanks for registering!</div>\n")
     thanks.exposed = True
