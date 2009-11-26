@@ -190,11 +190,23 @@ class RegisterPage:
                                   [name, email, password, url, level])
                 dbconnection.commit()
 
+                # Now fetch the user_id so we can automatically log the user in.
+                dbcursor.execute ("SELECT * FROM users WHERE email=%s", [email])
+                description = dbcursor.description
+                results = dbcursor.fetchone()
+                
+                user_id = None
+                user_level = 0
+                try:
+                    user_id = results[sqlutils.getfieldindex ("user_id", description)]
+                    user_level = results[sqlutils.getfieldindex ("level", description)]
+                except:
+                    pass
+                pageutils.set_logged_in (user_id, (user_level > 1))
+                    
                 # Close the database cursor and connection.
                 dbcursor.close()
                 dbconnection.close()
-
-                # FIXME: automatically log user in.
             except:
                 # FIXME: this is a public user page; provide more interesting feedback in this event.
                 return pageutils.generate_page ("Invalid SQL Query", "Invalid SQL Query!")
