@@ -215,6 +215,9 @@ class RegisterPage:
     process.exposed = True
 
     def thanks (self):
-        return pageutils.generate_page ("Thanks for Registering!",
-                                        "<div class=\"notice\">Thanks for registering!</div>\n")
+        if (pageutils.is_logged_in_p()):
+            return pageutils.generate_page ("Thanks for Registering!",
+                                            "<div class=\"notice\">Your account is active!</div>\n")
+        else:
+            raise cherrypy.HTTPRedirect ("/register")
     thanks.exposed = True
