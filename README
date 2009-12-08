@@ -12,8 +12,8 @@ the systems described in Software Engineering for Internet Applications
 (http://philip.greenspun.com/seia/)
 
 This software was written by Trevis Rothwell (tjr@gnu.org) and is released
-and reusable under the GNU GPL v3 license (or, at your option, any later
-version of the GNU GPL).
+and reusable under the GNU AGPL v3 license (or, at your option, any later
+version of the GNU AGPL).
 
 As of this checkin (21 November 2009) this software is a working system, with
 some minor issues yet to be addressed / implemented.
