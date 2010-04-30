@@ -125,7 +125,7 @@ def generate_header (title=""):
 
     r += "<div class=\"header\">\n"
     # r += "<h2><font color=\"#000099\">CedarRapidsOnline</font><font color=\"#d7831f\">.net</font></h2>\n"
-    r += "<a href=\"/\"><img src=\"/images/cr.jpg\" class=\"logo\"></a>\n"
+    r += "<a href=\"/\"><img src=\"/images/cr.png\" class=\"logo\"></a>\n"
 
     r += "<hr>\n"
     
